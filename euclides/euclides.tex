@@ -1,0 +1,363 @@
+\documentclass[compress]{beamer}
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  %\usecolortheme{spruce}
+  % or ...
+	%\useoutertheme{infolines}
+  %\setbeamercovered{transparent}
+  
+  \usetheme{CambridgeUS}
+    \setbeamercolor{item projected}{bg=darkred}
+    \setbeamertemplate{enumerate items}[default]
+    \setbeamertemplate{navigation symbols}{}
+    \setbeamercovered{transparent}
+    \setbeamercolor{block title}{fg=darkred}
+    \setbeamercolor{local structure}{fg=darkred}
+  
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{verbatim} 
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\usepackage{parskip}
+\tikzstyle{block}=[draw opacity=0.7,line width=1.4cm]
+\setlength{\parindent}{0cm}
+\newcommand{\bigpause}{\bigskip \pause}
+
+\lstloadlanguages{C++}
+\lstnewenvironment{code}
+	{%\lstset{	numbers=none, frame=lines, basicstyle=\small\ttfamily, }%
+	 \csname lst@SetFirstLabel\endcsname}
+	{\csname lst@SaveFirstLabel\endcsname}
+\lstset{% general command to set parameter(s)
+	language=C++, basicstyle=\footnotesize\sffamily, keywordstyle=\slshape,
+	emph=[1]{tipo,usa}, emphstyle={[1]\sffamily\bfseries},
+	basewidth={0.47em,0.40em},
+	columns=fixed, fontadjust, resetmargins, xrightmargin=5pt, xleftmargin=15pt,
+	flexiblecolumns=false, tabsize=2, breaklines,	breakatwhitespace=false, extendedchars=true,
+	numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=9pt,
+	frame=l, framesep=3pt,
+}
+
+\usepackage[spanish]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Algoritmo de Euclides] % (optional, use only with long paper titles)
+{Algoritmo de Euclides}
+
+\author[Melanie Sclar] % (optional, use only with lots of authors)
+{~Melanie Sclar}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+\institute[UBA] % (optional, but mostly needed)
+{
+  %\inst{1}%
+  Facultad de Ciencias Exactas y Naturales\\
+  Universidad de Buenos Aires
+}
+\date[AED III] % (optional, should be abbreviation of conference name)
+{AED III}
+
+% Ac¿ se puede insertar el logo de la UBA
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Contenidos}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\newcommand{\be}{\begin{equation*}}
+\newcommand{\ee}{\end{equation*}}
+\newcommand{\state}[1]{\left|\,#1\,\right\rangle}
+\newcommand{\costate}[1]{\left\langle\,#1\,\right|}
+\newcommand{\trace}{\text{Tr}}
+\newcommand{\su}{\uparrow}
+\newcommand{\sd}{\downarrow}
+\newcommand{\im}{\text{Im}}
+\newcommand{\re}{\text{Re}}
+
+
+\newcommand{\Asig}{\ensuremath{\leftarrow}}
+\newcommand{\AndY}{\ensuremath{\wedge}}
+\newcommand{\Or}{\ensuremath{\vee}}
+\newcommand{\Not}{\ensuremath{\neg}}
+\newcommand{\NotEq}{\ensuremath{\neq}}
+\newcommand{\MayorIg}{\ensuremath{\geq}}
+\newcommand{\tabu}{\hspace*{0.7cm}}
+\newcommand{\ctabu}{\hspace*{0.8cm}}
+\newcommand{\htabu}{\hspace*{0.25cm}}
+\newcommand{\moduloNombre}[1]{\textbf{#1}}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Ejercicio 2.8 de la pr\'actica}
+\begin{block}{Ejercicio 2.8}
+\begin{enumerate}[a.]
+\item Escribir el algoritmo de Euclides para calcular el m\'aximo com\'un divisor entre 2 n\'umeros $b$ y $c$ en forma
+recursiva y no recursiva. Mostrar que su complejidad es $O(min\{b,c\})$. Puede construir un ejemplo (un
+peor caso) donde esta complejidad efectivamente se alcance? \textquestiondown Puede hacerlo para b y c tan grandes
+como se desee?
+\end{enumerate}
+\end{block}  
+\end{frame}
+
+\begin{frame}{M\'aximo Com\'un Divisor}
+\begin{block}{Definici\'on del m\'aximo com\'un divisor o $mcd$}
+El m\'aximo com\'un divisor entre $a$ y $b$ o $mcd(a,b)$ ($a, b \in \mathbb{N}_0$) es el mayor n\'umero natural que los divide a ambos sin dejar resto. 
+\end{block}  
+
+Por ejemplo, $mcd(2,5) = 1$, $mcd(10,30) = 10$, $mcd(55,77) = 11$, $mcd(15,1) = 1$, $mcd(17,0) = 17$. \\
+\bigskip
+
+Notar que si $mcd(a,b) = k$ entonces $mcd(\frac{a}{k}, \frac{b}{k}) = 1$ pues quitamos todos los factores primos que eran comunes a ambos n\'umeros.
+
+\end{frame}
+
+\begin{frame}{Algoritmos recursivos}
+	\begin{block}{Definici\'on}
+	Un algoritmo se dice recursivo si calcula instancias de un problema en funci\'on de otras instancias del mismo problema hasta llegar a un caso base, que suele ser una instancia pequeña del problema, cuya respuesta generalmente est\'a dada en el algoritmo y no es necesario calcularla.
+	\end{block}
+\bigskip
+  Para calcular el $mcd$ de forma recursiva, necesitamos una propiedad del problema que cumpla esto: es decir, que escriba $mcd(a,b)$ en funci\'on de instancias menores que ella hasta llegar a un caso base.
+\end{frame}
+
+\begin{frame}{Algoritmos recursivos}
+	\begin{block}{Definici\'on}
+	Un algoritmo se dice recursivo si calcula instancias de un problema en funci\'on de otras instancias del mismo problema hasta llegar a un caso base, que suele ser una instancia pequeña del problema, cuya respuesta generalmente est\'a dada en el algoritmo y no es necesario calcularla.
+	\end{block}
+\bigskip
+  Para calcular el $mcd$ de forma recursiva, necesitamos una propiedad del problema que cumpla esto: es decir, que escriba $mcd(a,b)$ en funci\'on de instancias menores que ella hasta llegar a un caso base.
+\end{frame}
+
+\begin{frame}{Algoritmos recursivos}
+	\begin{block}{Lema}
+	Sea $a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b-a) = k$.
+	\end{block}
+\bigskip
+
+\pause
+\invisible<1>{
+{\small 
+\textit{\textbf{Demostraci\'on:}} $mcd(a, b) = k$, luego $a = ka'$, $b = kb'$ con $mcd(a', b') = 1$. \\ \bigskip
+
+Veamos que $mcd(a, b-a) = k$: \\
+$mcd(a, b-a) = mcd(ka', kb'-ka') = mcd(ka', k(b'-a'))= k \cdot mcd(a', b'-a')$ \\ \bigskip
+$\Rightarrow mcd(a, b-a) \geq k \cdot 1 = k$. Entonces seguro que $mcd(a, b-a) \geq k$, pero \textquestiondown puede suceder que $mcd(a, b-a) > k$? \\ \bigskip
+
+Supongamos que $mcd(a, b-a) = q > k$. Entonces tenemos que:
+
+\[ 
+\left \{
+  \begin{tabular}{c}
+  $a \equiv 0 \pmod{q}$\\
+  $b-a \equiv 0 \pmod{q}$ 
+  \end{tabular}
+\right.
+\]
+\bigskip
+Luego concluimos que $a \equiv b \equiv 0 \pmod{q}$.
+}
+}
+\end{frame}
+
+\begin{frame}
+Como $a \equiv b \equiv 0 \pmod{q}$, deducimos que $a$ y $b$ son los dos m\'ultiplos de $q$ (y recordemos que por hip\'otesis $q > k$). 
+Pero luego $mcd(a,b) \geq q > k$. \\ \bigskip
+
+\textexclamdown Absurdo pues $mcd(a,b) = k$ por hip\'otesis del ejercicio! Provino de suponer que $mcd(a, b-a) > k$. Luego, 
+como $mcd(a, b-a) \leq k$ y $mcd(a, b-a) \geq k$ deducimos que $mcd(a, b-a) = k$. $\blacksquare$
+
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Lema 1}
+	Sea $a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b-a) = k$.
+\end{block}
+
+Este lema es v\'alido como funci\'on recursiva pero puede ser mejorado. Notemos que si $b-a \geq a$, entonces al aplicar de nuevo el Lema obtendremos
+$mcd(a,b-2a) = k$, y as\'i sucesivamente hasta que $b-xa < a$. Es decir que podemos mejorar el lema 1 aplic\'andolo varias veces para obtener el lema 2.\\ \bigskip
+
+\pause
+\invisible<1>{
+\begin{block}{Lema 2}
+{\small
+	Sea $0 < a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b \pmod{a}) = k$.
+}
+\end{block}
+}
+\end{frame}
+
+\begin{frame}
+\begin{block}{Lema 2}
+	Sea $0 < a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b \mod{a}) = k$.
+\end{block}
+\pause
+\invisible<1>{
+{\small 
+\textit{\textbf{Demostraci\'on:}} \\ Como $a \leq b$, $b$ se puede escribir como $b = ra+s$ con $r, s \in \mathbb{N}_0$ y $0 \leq s < a$. \\ \bigskip
+Aplicando sucesivamente el Lema 1, por inducci\'on podemos ver que $mcd(a, b-ra) = k$, pues $b - (r-1)a \geq a$ y por ende vale aplicar el lema por $r$-\'esima vez.
+Ahora bien, $b-ra = s$, y $s$ es justamente el resto de $b$ m\'odulo $a$. Es decir, $s = b \mod{a}$.\\
+En conclusi\'on, queda que $mcd(a,s) = k$, o en otras palabras \\ $mcd(a, b \mod{a}) = k$. $\blacksquare$
+}
+}
+\end{frame}
+
+\begin{frame}
+Entonces ya tenemos una propiedad recursiva que nos permitir\'a hallar $mcd(a,b)$. Pero nos falta saber cu\'ando parar, es decir, los \textbf{casos base}. \\ \bigskip
+\pause
+\invisible<1>{
+$mcd(a,0) = a$ \\
+$mcd(0,a) = a$ \\ \bigskip
+
+Notemos adem\'as que si no fueran casos base incurrir\'iamos en un error, pues $a\mod{0}$ no se puede efectuar.
+}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudoc\'odigo de soluci\'on recursiva}
+\begin{verbatim}
+function mcd (natural a, natural b) {
+      if (a == 0)
+           devolver b
+      if (b == 0)
+           devolver a
+      if (a <= b)
+           devolver mcd(a, b mod a)
+      devolver mcd(a mod b, b)
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudoc\'odigo de soluci\'on iterativa}
+\begin{verbatim}
+function mcd (natural a, natural b) {
+      if (a > b)
+            intercambiar a y b
+      // siempre mantendremos el invariante a <= b
+
+      while (a > 0) {
+            tmp = b mod a
+            b = a
+            a = tmp
+            // notar que b mod a <= a, 
+            // por eso los pusimos en ese orden
+      }
+      devolver b
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Complejidad (esbozo)}
+
+Es f\'acil ver que nuestras implementaciones son $O(min(b,c))$ pues en cada paso el n\'umero m\'as chico entre los dos involucrados decrece en al menos 1. Como cada ejecuci\'on es $O(1)$ y
+paramos cuando el m\'inimo llega a 0, la ejecuci\'on completa sera $O(min(b,c))$. Despu\'es veremos que esta cota se puede mejorar mucho m\'as. \\ \bigskip
+
+\end{frame}
+
+\begin{frame}{Peores casos - Fibonacci}
+Los peores casos del algoritmo ocurren cuando $a$ y $b$ son Fibonacci's consecutivos. Esto es as\'i pues sabemos que en cada paso se efect\'ua al menos una resta (hacer $b \mod{a}$ implica
+restarle al menos $a$ a $b$) y el peor caso ocurre cuando en cada paso se efect\'ua exactamente una resta. \\ \bigskip
+
+$mcd(F_{k}, F_{k+1}) = mcd(F_{k-1}, F_{k}) = \cdots = mcd(F_{0}, F_{1}) = mcd(0,1) = 1$ \\ \bigskip
+
+M\'as adelante retomaremos esta observaci\'on para demostrar la complejidad real de nuestros algoritmos.
+\end{frame}
+
+\begin{frame}{Ejercicio 2.8 de la pr\'actica}
+\begin{block}{Ejercicio 2.8}
+\begin{enumerate}[b.]
+\item Analizar el siguiente algoritmo para determinar el m\'aximo com\'un divisor entre dos n\'umeros $b$ y $c$, y
+mostrar que su complejidad tambi\'en es $O(min(b,c))$. \\ \bigskip
+\texttt{ \small 
+$g \leftarrow min(b,c)$ \\
+\htabu mientras $g > 1$ hacer \\
+\htabu \tabu si $\frac{b}{g}$ y $\frac{c}{g}$ son enteros, informar $mcd = g$ y parar. \\
+\htabu \tabu poner $g = g-1$ \\
+\htabu informar $mcd = 1$ y parar}
+\end{enumerate}
+\end{block}  
+\end{frame}
+
+\begin{frame}
+Notemos que el algoritmo es correcto pues recorre todos los posibles divisores de $b$ y $c$ y se queda con el mayor de ellos (que por como recorremos, es el primero
+que cumple la propiedad).\\ \bigskip $mcd(b,c) \leq min(b,c)$, y recorremos a lo sumo una vez el cuerpo por cada uno de los $g$. Dicho cuerpo es $O(1)$, y se ejecuta $O(min(b,c))$
+veces, por lo tanto el algoritmo completo es $O(min(b,c))$.
+\end{frame}
+
+\begin{frame}{Ejercicio 2.8 de la pr\'actica}
+\begin{block}{Ejercicio 2.8}
+\begin{enumerate}[c.]
+\item Las complejidades calculadas para los algoritmos de las partes a. y b. son iguales. \textquestiondown Cu\'al de los dos algoritmos elegir\'a? Justificar y comentar.
+\item Probar que se puede mejorar la complejidad calculada en a. demostrando que el algoritmo de Euclides
+es en realidad $O(log_2(min\{b, c\}))$.
+\end{enumerate}
+\end{block} 
+\end{frame}
+
+\begin{frame}{Demostraci\'on de complejidad de las implementaciones del \'item a}
+Recordemos que en cada paso tomamos m\'odulo del n\'umero m\'as grande sobre el m\'as chico. As\'i, en cada paso obtenemos un par de n\'umeros. Como el $mcd$ es conmutativo, ponemos primero el menor n\'umero y luego el mayor. Como $a \leq b$, en dos pasos de aplicaci\'on del lema 2 se tiene que: \\ \bigskip
+
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+Queremos probar que el algoritmo es $O(\lg a)$, pues $a = min(a,b)$, y para ello demostraremos que cada 2 pasos del algoritmo, $a$ se reduce a la mitad.
+\end{frame}
+
+\begin{frame}{Demostraci\'on de complejidad de las implementaciones del \'item a (cont.)}
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+Queremos probar que el algoritmo es $O(\lg a)$ (pues $a = min(a,b)$) y para ello demostraremos que cada 2 pasos del algoritmo, el m\'inimo del par actual se reduce a la mitad. Si probamos eso, como cada paso es $O(1)$ y habr\'a $O(2\lg a) = O(\lg a)$ pasos, el algoritmo ser\'a $O(\lg a)$.\\ \bigskip
+
+\end{frame}
+
+\begin{frame}
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+\begin{enumerate}
+\item Si $b \mod{a} \leq \frac{a}{2}$ entonces el m\'inimo n\'umero del par se redujo a la mitad en tan solo un paso. Como en cada paso se reduce cada n\'umero o queda igual, luego de 2 pasos el m\'inimo n\'umero del par original se habr\'a reducido a la mitad.
+\item Si $b \mod{a} > \frac{a}{2}$, veamos que $a \mod{(b \mod{a})}$ ser\'a peque\~no: \\
+\tabu \tabu $a = (b \mod{a})r + s$, pues $b \mod{a} < a$ (por definici\'on de m\'odulo). \\
+
+Ahora bien, como $b \mod{a} > \frac{a}{2}$ deducimos que $r = 1$. En otras palabras, $a = (b \mod{a}) + s \Rightarrow a - (b \mod{a}) = s < a - \frac{a}{2}$, por lo que $s < \frac{a}{2}$. 
+Como $s$ es por definici\'on $a \mod{(b \mod{a})}$, acabamos de ver que el menor n\'umero del par se redujo a la mitad de su valor original en dos pasos.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Tarea}
+\begin{itemize}
+\item {\small \url{http://acm.timus.ru/problem.aspx?space=1\&num=1139}} \\- Un lindo problema que sale con MCD.
+\end{itemize}
+\end{frame}
+
+\end{document}
