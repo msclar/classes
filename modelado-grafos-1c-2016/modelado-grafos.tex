@@ -1,0 +1,453 @@
+\documentclass[compress]{beamer}
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  %\usecolortheme{spruce}
+  % or ...
+	%\useoutertheme{infolines}
+  %\setbeamercovered{transparent}
+  
+  \usetheme{CambridgeUS}
+    \setbeamercolor{item projected}{bg=darkred}
+    \setbeamertemplate{enumerate items}[default]
+    \setbeamertemplate{navigation symbols}{}
+    \setbeamercovered{invisible}
+    \setbeamercolor{block title}{fg=darkred}
+    \setbeamercolor{local structure}{fg=darkred}
+  
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{verbatim} 
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\tikzstyle{block}=[draw opacity=0.7,line width=1.4cm]
+
+\newcommand{\bigpause}{\bigskip \pause}
+
+\lstloadlanguages{C++}
+\lstnewenvironment{code}
+	{%\lstset{	numbers=none, frame=lines, basicstyle=\small\ttfamily, }%
+	 \csname lst@SetFirstLabel\endcsname}
+	{\csname lst@SaveFirstLabel\endcsname}
+\lstset{% general command to set parameter(s)
+	language=C++, basicstyle=\footnotesize\sffamily, keywordstyle=\slshape,
+	emph=[1]{tipo,usa}, emphstyle={[1]\sffamily\bfseries},
+	basewidth={0.47em,0.40em},
+	columns=fixed, fontadjust, resetmargins, xrightmargin=5pt, xleftmargin=15pt,
+	flexiblecolumns=false, tabsize=2, breaklines,	breakatwhitespace=false, extendedchars=true,
+	numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=9pt,
+	frame=l, framesep=3pt,
+}
+
+\usepackage[spanish]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Modelado con grafos] % (optional, use only with long paper titles)
+{Modelado con grafos}
+
+\author[Melanie Sclar] % (optional, use only with lots of authors)
+{~Melanie Sclar}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+\institute[UBA] % (optional, but mostly needed)
+{
+  %\inst{1}%
+  Facultad de Ciencias Exactas y Naturales\\
+  Universidad de Buenos Aires
+}
+%\date[TC 2014] % (optional, should be abbreviation of conference name)
+%{Training Camp 2014}
+
+% Ac¿ se puede insertar el logo de la UBA
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Contenidos}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\newcommand{\be}{\begin{equation*}}
+\newcommand{\ee}{\end{equation*}}
+\newcommand{\state}[1]{\left|\,#1\,\right\rangle}
+\newcommand{\costate}[1]{\left\langle\,#1\,\right|}
+\newcommand{\trace}{\text{Tr}}
+\newcommand{\su}{\uparrow}
+\newcommand{\sd}{\downarrow}
+\newcommand{\im}{\text{Im}}
+\newcommand{\re}{\text{Re}}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Contenidos}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{Cómo recorrer un grafo}
+\subsection{Depth First Search}
+\begin{frame}{Repaso: DFS}
+El DFS (Depth First Search) es un tipo de recorrido del grafo. Se dice que lo recorre \textit{en profundidad}, es decir, empieza por el nodo inicial y en cada paso visita un nodo vecino no visitado del nodo donde está parado, si no hay nodos por visitar vuelve para atrás.
+
+\bigskip
+Veamos un ejemplo visual de cómo se recorre un grafo con DFS.
+\end{frame}
+
+
+\begin{frame}{Ejemplo}
+\tikzstyle{vertex}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
+\tikzstyle{selected vertex} = [vertex, fill=red!24]
+\tikzstyle{edge} = [draw,thick,-]
+\tikzstyle{weight} = [font=\small]
+\tikzstyle{selected edge} = [draw,line width=5pt,-,red!50]
+\tikzstyle{ignored edge} = [draw,line width=5pt,-,black!20]
+
+\begin{figure}
+\begin{tikzpicture}[scale=1.8, auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \foreach \pos/\name/\dist in {{(0,2)/0/0}, {(2,1)/1}, {(4,1)/2}, {(0,0)/3}, {(3,0)/4}, {(2,-1)/5}, {(4,-1)/6}}
+        \node[vertex] (\name) at \pos {$\name$};
+    % Connect vertices with edges and draw weights
+    %\foreach \source/ \dest /\weight in {b/a/7, c/b/8,d/a/5,d/b/9,
+           %                              e/b/7, e/c/5,e/d/15,
+          %                               f/d/6,f/e/8,
+         %                                g/e/9,g/f/11}
+        %\path[edge] (\source) -- node[weight] {$\weight$} (\dest);
+      \path[edge] (1) -- (0);
+      \path[edge] (2) -- (1);
+      \path[edge] (3) -- (0);
+      \path[edge] (4) -- (3);
+      \path[edge] (5) -- (3);
+      \path[edge] (5) -- (4);
+      \path[edge] (6) -- (5);
+      
+    \foreach \vertex / \fr in {0/1,1/2,2/3,3/4,5/5,4/6,6/7}
+        \path<\fr-> node[selected vertex] at (\vertex) {$\vertex$};
+    % For convenience we use a background layer to highlight edges
+    % This way we don't have to worry about the highlighting covering
+    % weight labels. 
+    \begin{pgfonlayer}{background}
+        \pause
+        \foreach \source / \dest / \fr in {0/1/2,1/2/3,0/3/4,3/5/5,5/4/6,5/6/7}
+            \path<\fr->[selected edge] (\source.center) -- (\dest.center);
+    \end{pgfonlayer}
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Ejemplo}
+En el ejemplo anterior vimos cómo recorre el grafo un DFS. Ahora tratemos de implementar un DFS resolviendo un problema (por supuesto, DFS se puede aplicar a muchos problemas más).
+
+\begin{block}{Problema}
+Dado un grafo conexo (es decir, que existe al menos un camino entre todo par de nodos) queremos ver si dicho grafo es un {\bf árbol}.
+\end{block}
+\end{frame}
+
+\begin{frame}{Ideas para la resolución}
+\begin{itemize}
+\item Primero que nada, como tenemos un grafo vamos a querer recorrerlo y detectar si existe más de un camino entre algún par de nodos. ¿Pero cómo podemos hacer esto?
+\pause
+\invisible<1>{
+\item Iremos recorriendo el grafo con DFS, siempre moviéndome a un vecino no visitado aún. Para no visitar un nodo dos veces (eso sería innecesario y empeoraría la performance) marcamos cada nodo cuando lo revisamos.  ¿Qué significa si llego a un nodo y un vecino de él (que no es por el que llegué) ya está visitado?}
+\pause
+\invisible<1-2>{
+\item Significa que desde mi nodo inicial pude llegar a un nodo de dos formas distintas: es decir que no existe un único camino, lo que contradice la definición de árbol. Ergo, no es árbol. }
+\end{itemize}
+\end{frame}
+
+
+%\pause
+%\invisible<1>{
+%\item Cuando llega a un nodo que ya fue visitado se da cuenta de que pudo acceder a ese nodo por dos caminos, eso %quiere decir que si recorremos uno de los caminos en un sentido y el otro camino en sentido opuesto formamos un ciclo.}
+%\pause
+%\invisible<1-2>{
+%\item Asx como el BFS se implementa con una cola, el DFS se implementa con una pila.}
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}[fragile]{Pseudocódigo del DFS}
+\begin{lstlisting}
+// inicialmente se llena el vector visitado en false pues ningun nodo fue visitado
+// ademas el nodo inicial no tiene padre y por eso se llama con padre = -1
+bool esArbol(grafo, int nodoActual, vector<bool> &visitado, int padre):
+    visitado[nodoActual] = true 
+
+    para cada vecino v de nodoActual en grafo:
+        si v ya fue visitado y v != padre:
+            devolver false
+            // encontre dos caminos distintos y luego no es arbol
+        si v no fue visitado aun:
+            si no esArbol(grafo, v, visitado, nodoActual): 
+            // llamo recursivamente al dfs con el subarbol con raiz en v, ahora el padre es nodoActual
+                devolver false
+    
+    // si para ningun vecino encontre algun ciclo, es un arbol porque se que es conexo
+    devolver true
+		
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Implementación en C++ del DFS}
+\begin{lstlisting}
+bool esArbol(vector<vector<int> > &lista, int t, vector<bool> &visitado, int padre)
+{
+    visitado[t] = true;
+    for(int i = 0; i < lista[t].size(); i++)
+    {
+        if(visitado[lista[t][i]] == true && lista[t][i] != padre)
+            return false;
+        if(visitado[lista[t][i]] == false)
+            if(esArbol(lista, lista[t][i], visitado, t) == false)
+                return false;
+    }
+    return true;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Análisis del DFS}
+\begin{itemize}
+\item En ningún momento usamos una pila explícita, pero la pila está implícita en la recursión.
+\pause
+\invisible<1>{
+\item Guardamos el padre del nodo, es decir, el nodo desde el cual fuimos a parar al nodo actual, para no confundir un ciclo con ir y volver por la misma arista.}
+\pause
+\invisible<1-2>{
+\item Si el nodo ya lo visitamos y no es el nodo desde el cual venimos quiere decir que desde algún nodo llegamos por dos caminos, o sea que hay un ciclo.}
+\pause
+\invisible<1-3>{
+\item Si el nodo no lo visitamos, pero desde uno de sus vecinos podemos llegar a un ciclo, entonces es porque hay un ciclo en el grafo y por lo tanto no es un árbol.}
+\end{itemize}
+\end{frame}
+
+\subsection{Breadth First Search}
+\begin{frame}{Otro algoritmo de búsqueda: BFS}
+Muchas veces no basta con recorrer el grafo, sino que queremos hacerlo de una forma en particular. BFS suele ser muy útil en muchos problemas, veamos de qué se trata!
+\bigskip
+
+\begin{block}{Breadth First Search o \textit{búsqueda en anchura}}
+El Breadth First Search o \textit{búsqueda en anchura} es un algoritmo que recorre un grafo comenzando por un nodo en particular, y se exploran todos los vecinos del nodo. Luego, se exploran todos los vecinos de los vecinos del nodo inicial, y así siguiendo hasta recorrer todos los nodos.
+\end{block}
+
+Veámoslo gráficamente.
+\end{frame}
+
+\begin{frame}{Ejemplo de recorrido de un grafo usando BFS}
+\tikzstyle{vertex}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
+\tikzstyle{selected vertex} = [vertex, fill=red!24]
+\tikzstyle{edge} = [draw,thick,-]
+\tikzstyle{weight} = [font=\small]
+\tikzstyle{selected edge} = [draw,line width=5pt,-,red!50]
+\tikzstyle{ignored edge} = [draw,line width=5pt,-,black!20]
+
+\begin{figure}
+\begin{tikzpicture}[scale=1.8, auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \foreach \pos/\name/\dist in {{(0,2)/0/0}, {(2,1)/1}, {(4,1)/2}, {(0,0)/3}, {(3,0)/4}, {(2,-1)/5}, {(4,-1)/6}}
+        \node[vertex] (\name) at \pos {$\name$};
+    % Connect vertices with edges and draw weights
+    %\foreach \source/ \dest /\weight in {b/a/7, c/b/8,d/a/5,d/b/9,
+           %                              e/b/7, e/c/5,e/d/15,
+          %                               f/d/6,f/e/8,
+         %                                g/e/9,g/f/11}
+        %\path[edge] (\source) -- node[weight] {$\weight$} (\dest);
+      \path[edge] (1) -- (0);
+      \path[edge] (2) -- (1);
+      \path[edge] (3) -- (0);
+      \path[edge] (4) -- (3);
+      \path[edge] (5) -- (3);
+      \path[edge] (5) -- (4);
+      \path[edge] (6) -- (5);
+      
+    \foreach \vertex / \fr in {0/1,1/2,3/3,2/4,4/5,5/6,6/7}
+        \path<\fr-> node[selected vertex] at (\vertex) {$\vertex$};
+    % For convenience we use a background layer to highlight edges
+    % This way we don't have to worry about the highlighting covering
+    % weight labels. 
+    \begin{pgfonlayer}{background}
+        \pause
+        \foreach \source / \dest / \fr in {0/1/2,0/3/3,1/2/4,3/4/5,3/5/6,5/6/7}
+            \path<\fr->[selected edge] (\source.center) -- (\dest.center);
+    \end{pgfonlayer}
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+Implementemos un BFS resolviendo un problema. Vale notar que este problema no podía ser resuelto con DFS.
+
+\begin{block}{Calcular las distancias de un nodo a todos los demás}
+Dado un nodo inicial, queremos hallar la distancia de cada nodo a todos los demás. Recordemos que puede haber más de una forma de ir de un nodo a otro, pero para la distancia siempre tomaremos la mínima.
+\end{block}
+
+\textquestiondown Cómo podemos resolverlo usando BFS? Por ahora no nos centremos en cómo se implementa el algoritmo, sino en cómo usarlo para resolver el problema. Luego intentaremos implementarlo.
+\end{frame}
+
+\begin{frame}{Detalles de implementación del BFS}
+\begin{itemize}
+\item Las distancias del nodo inicial a los demás nodos las inicializaremos en infinito (en principio no sabemos a qué distancia están, luego iremos actualizando el valor si encontramos un camino desde el nodo inicial al nodo).
+\pause
+\invisible<1>{
+\item Usaremos una cola para ir agregando los nodos por visitar. Como agregamos primero todos los vecinos del nodo inicial, los primeros nodos en entrar a la cola son los de distancia 1, luego agregamos los vecinos de esos nodos, que son los de distancia 2, y así vamos recorriendo el grafo en orden de distancia al vértice inicial.}
+\pause
+\invisible<1-2>{
+\item Cuando visitamos un nodo, sabemos cuáles de sus vecinos agregar a la cola. Tenemos que visitar los vecinos que todavía no han sido visitados.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudoc\'odigo del BFS}
+
+\begin{lstlisting}
+vector<int> BFS (Grafo listaAdyacencias, int nodoInicial):
+   cantidadDeNodos = longitud(listaAdyacencias)
+   queue<int> cola // aqui encolare los nodos que todavia no analizamos
+
+   // distancias[i] = distancia de i a nodoInicial, inicialmente es INFINITO
+   vector<int> distancias(cantidadDeNodos, INFINITO) 
+
+   cola.encolar(nodoInicial)
+   distancias[nodoInicial] = 0
+   mientras (la cola no esta vacia):
+       tope = cola.tope() // tomo el tope de la cola (y lo saco de la cola)
+
+       para todos los vecinos v de "tope" en el grafo:
+           si la distancia entre v y el nodoInicial es infinito:
+               distancias[v] = distancias[tope] + 1 // esta un nodo mas lejos que su vecino
+               cola.encolar(v) // encolo v para analizarlo luego
+
+   devolver distancias
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Implementaci\'on del BFS}
+\begin{lstlisting}
+vector<int> BFS(vector<vector<int> > &lista, int nodoInicial){
+    int n = lista.size(),t;
+    queue<int> cola;
+    vector<int> distancias(n,n);
+    cola.push(nodoInicial);
+    distancias[nodoInicial] = 0;
+    while(!cola.empty()){
+        t = cola.front();
+        cola.pop();
+        for(int i=0;i<lista[t].size();i++){
+            if(distancias[lista[t][i]]==n){
+                distancias[lista[t][i]] = distancias[t]+1;
+                cola.push(lista[t][i]);
+            }
+        }
+    }
+    return distancias;
+}
+\end{lstlisting}
+\end{frame}
+
+\section{Problemas con grafos}
+\subsection{Calentando motores}
+\begin{frame}{Problema sencillo para empezar}
+En una ciudad con forma de grilla hay $h$ calles horizontales y $v$ calles verticales. Adem\'as, algunas esquinas est\'an obstaculizadas por diversos motivos, y no se puede pasar por all\'i.\bigskip
+
+Queremos partir desde nuestra casa y llegar a la facultad. ?`Ser\'a posible lograrlo? \\ Dise\~nemos un algoritmo eficiente para resolver este problema. \bigskip
+
+{\bf Pista:} el problema se puede resolver con complejidad temporal $O(v h)$
+
+\end{frame}
+
+\subsection{Modelar un problema con un grafo no trivial}
+\begin{frame}{Modelar un problema con un grafo no trivial}
+Muchas veces, modelar un problema con el grafo que el enunciado casi expl\'icitamente nos describe no es suficiente para cumplir con los requerimientos de eficiencia que se nos piden (o a veces, ni siquiera sabr\'iamos c\'omo resolverlo con ese grafo que nos dan).\bigskip
+
+Para eso, durante la clase de hoy intentaremos {\bf pensar en grafos un poco m\'as ricos de los que venimos viendo, con m\'as par\'ametros}, que nos permitan resolver los problemas eficientemente. \bigskip
+
+Como suele suceder, esto es un trade-off: {\bf al ganar en complejidad temporal, podemos perder en complejidad espacial}.
+\end{frame}
+
+\subsection{En la altura, la bici no dobla}
+\begin{frame}{En la altura, la bici no dobla}
+Melanie vive en la ciudad que mencionamos anteriormente: tiene forma de grilla, con $h$ calles horizontales y $v$ calles verticales. Adem\'as, algunas esquinas est\'an obstaculizadas por diversos motivos, y no puede pasar por all\'i.\bigskip
+
+Recientemente Melanie se compr\'o una bicicleta y ya aprendi\'o a andar sin rueditas, pero doblar todav\'ia le cuesta. Le gustar\'ia poder ir en bici de su casa a la facultad minimizando la cantidad de veces que tiene que doblar en una esquina.
+?`C\'omo la podemos ayudar? \bigskip
+\end{frame}
+
+\begin{frame}{Spoilers - idea 1}
+
+Crear un grafo donde cada nodo describa una esquina y la direcci\'on de la que provenimos con la bici. As\'i, {\bf el nodo ser\'a una tupla (fila, columna, direcci\'on)}, y se conectar\'an dos nodos si y s\'olo si de un estado puedo pasar al otro. Adem\'as, si para pasar de un estado a otro debo doblar en una esquina, la arista tendr\'a costo 1. De lo contrario, tendr\'a costo 0.
+\bigskip
+
+Luego, tendremos un grafo con aristas de peso 0 \'o 1, y queremos saber cu\'al es el camino de costo m\'inimo desde la esquina inicial hasta la final. O(vh lg(vh)) si usamos Dijkstra con cola de prioridad.
+
+\end{frame}
+
+
+\begin{frame}{Spoilers - idea 2}
+
+Ahora cada nodo adem\'as contendr\'a cu\'antos giros fue necesario realizar para llegar a cada esquina. As\'i, {\bf el nodo ser\'a una tupla (fila, columna, cantidad de giros usados hasta el momento, direcci\'on)}, y se conectar\'an dos nodos si y s\'olo si de un estado puedo pasar al otro.
+\bigskip
+
+Notar que este grafo no tendr\'a pesos, y lo que queremos preguntar es si ser\'a posible llegar a alg\'un nodo final cualquiera sea la cantidad de giros y la direcci\'on del mismo. Para ello ser\'a necesario recorrer el grafo (por ejemplo usando BFS) y ver si el nodo salida y alguna de las llegadas se encuentran en la misma componente conexa. Linealmente recorremos todos los posibles nodos llegada, y retornamos aquel cuya cantidad de giros necesarios sea m\'inima. \bigskip
+
+\end{frame}
+
+\begin{frame}{Spoilers - idea 2 (c\'alculo de complejidad)}
+
+Llamemos $g$ a la cantidad m\'axima de giros posibles a realizar en el tablero.
+As\'i, como BFS es lineal en el tama\~no de la entrada, y tenemos $v \times h \times g \times 2$ nodos en nuestro modelado (y cada nodo tiene grado a lo sumo 4), la recorrida del grafo ser\'a O(vhg).
+\bigskip
+
+Al final recorremos linealmente todos los posibles nodos finales, que como tienen fija la esquina en la que terminan son solamente $2g$ nodos. As\'i, la complejidad total del algoritmo es $O(vhg) + O(2g) = O(vhg)$
+\end{frame}
+
+
+\subsection{El retorno del jedi recargado}
+\begin{frame}{El retorno del jedi recargado}
+Luke también vive en la ciudad que mencionamos anteriormente. Quiere ir desde la esquina superior izquierda hasta la esquina inferior derecha, y como no quiere que le digan \textit{que corre para atrás porque no tiene aguante}, va a intentar sólo moverse hacia la derecha o hacia abajo.\\ \bigskip
+
+Sin embargo, no es tan tajante como en el TP: sabe que puede ser imposible llegar de una punta a la otra con solo estos dos movimientos pues hay obstáculos. Entonces, está dispuesto a moverse hasta $a \geq 0$ veces hacia la izquierda y $b \geq 0$ veces hacia arriba. Puede moverse para abajo o para la derecha tantas veces como quiera.\\ \bigskip
+
+¿Dadas estas restricciones, cuál es la mínima cantidad de calles que tiene que recorrer Luke para llegar a su destino?
+\end{frame}
+
+\begin{frame}
+\begin{center}
+{¡A pensar!}
+\end{center}
+\end{frame}
+
+\end{document}
