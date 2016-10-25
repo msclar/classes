@@ -1,5 +1,11 @@
 \documentclass[compress]{beamer}
 
+% sudo apt install texlive-latex-base
+% sudo apt install latex-beamer
+% sudo apt install texlive-lang-spanish
+% sudo apt install geany
+% sudo apt install texlive-fonts-recommended
+
 \mode<presentation>
 {
   %\usetheme{Warsaw}
@@ -193,19 +199,6 @@ A medida que los problemas se dificultan, puede suceder que sea difícil que a u
 
 \end{frame}
 
-\begin{frame}
-De ahora en más trabajaremos con grafos no dirigidos por simplicidad, pero también podrían aplicarse a grafos dirigidos.
-
-\begin{block}{Vecindad}
-Diremos que dos nodos son $adyacentes$ o $vecinos$ si existe una arista que los une.
-\end{block}
-
-\begin{block}{Distancia}
-La distancia entre dos nodos $u$ y $v$ es la mínima cantidad de ejes por los que me tengo que mover para salir de $u$ y llegar a $v$. Si hay múltiples formas de llegar de $u$ a $v$, me quedo con la más corta.
-\end{block}
-
-\end{frame}
-
 \begin{frame}{Formas de representar un grafo}
 Existen varias maneras de guardar un grafo en memoria para poder luego consultar cosas (por ejemplo, recorrer el grafo, que es lo que haremos hoy).
 
@@ -288,9 +281,12 @@ o no) \textbf{siempre y cuando sus pesos no sean negativos}.
 
 El algoritmo calcula las distancias mínimas desde un nodo inicial a todos 
 los demás. Para hacerlo, en cada paso se toma el nodo más cercano al inicial
-que aún no fue visitado. Por ser el más cercano aún no visto, esta distancia
-que hallamos es la mínima (reflexionaremos más sobre esto). Así, en cada
-paso tenemos un subconjunto de nodos que están bien resueltos, y con cada
+que aún no fue visitado (le diremos $v$). Este nodo tiene calculada la menor distancia
+al nodo inicial (\textquestiondown por qué?). Ahora, recalculamos todas
+los caminos mínimos, teniendo en cuenta a $v$ como camino intermedio.
+Así, en cada paso tendremos un subconjunto de nodos que ya tienen calculada
+su mínima distancia y los demás tienen calculada su mínima distancia si solo
+puedo usar los nodos del conjunto como nodos intermedios. Con cada
 iteración agregaremos un nodo más a nuestro conjunto, hasta resolver el 
 problema en su totalidad.
 
@@ -470,7 +466,25 @@ Veamos un ejemplo.
 \end{pgfpicture}
 \end{frame}
 
+\subsection{\textquestiondown Por qué funciona este algoritmo?}
+\begin{frame}{\textquestiondown Por qué funciona este algoritmo?}
+Si bien no veremos la demostración formal, la clave está en que:
 
+\begin{itemize}
+\item En cada paso, para todos los nodos $u$ que ya fueron visitados,
+el algoritmo tiene calculada la mínima distancia del nodo inicial a $u$.
+Para los nodos $v$ que aún no fueron visitados, el algoritmo tiene calculada
+la distancia mínima si solo podemos utilizar nodos ya visitados como puntos
+intermedios del camino.
+\item El próximo nodo a ser visitado es el más cercano al nodo inicial
+que aún no fue visitado. Entonces, este ya tiene calculada la distancia
+correcta (si no, habría una mejor solución usando nodos no visitados como
+nodos intermedios, pero este nodo es el más cercano al origen entre todos los
+no visitados!).
+\item Al comienzo, las distancias están bien calculadas.
+\end{itemize}
+
+\end{frame}
 
 \begin{frame}[fragile]{Pseudocódigo de Dijkstra sin cola de prioridad}
 \begin{lstlisting}
@@ -495,6 +509,17 @@ Dijkstra (Grafo G, nodo inicial s)
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}{Costo de esta implementación de Dijkstra}
+Podemos ver que utiliza $O(n^2)$ operaciones, siendo $n$ la cantidad de
+nodos del problema.
+\end{frame}
+
+\begin{frame}{Otra implementación}
+Existen otras implementaciones del algoritmo de Dijkstra. La que veremos
+a continuación solo difiere de la anterior en la forma de guardar los
+nodos candidatos a ser visitados.
+\end{frame}
+
 \begin{frame}[fragile]{Pseudocódigo de Dijkstra con cola de prioridad}
 \begin{lstlisting}
 Dijkstra (Grafo G, nodo_fuente s)       
@@ -517,6 +542,29 @@ Dijkstra (Grafo G, nodo_fuente s)
 \end{lstlisting}
 \end{frame}
 
+\begin{frame}{Costo de esta implementación de Dijkstra}
+Podemos ver que utiliza $O(m \log n)$ operaciones, siendo $n$ la cantidad de
+nodos del problema y $m$ la cantidad de aristas. No veremos hoy la demostración,
+pero se basa en que las estructuras que usamos para la cola de prioridad
+extraen e insertan un elemento en tiempo logarítmico.
+
+\bigskip
+
+Existen varias estructuras en C++ para implementar cola de prioridad. Dos
+ejemplos son \texttt{priority\_queue} y \texttt{set}.
+
+\end{frame}
+
+\begin{frame}{\textquestiondown Qué implementación uso?}
+\begin{itemize}
+\item Si el grafo es \textbf{ralo}, o sea, tiene pocas aristas, conviene utilizar 
+\\ \pause \invisible<1> { la implementación con cola de prioridad ($O(m \log n)$) 
+\pause \invisible<1-2> { 
+\item Si el grafo es \textbf{denso}, o sea, tiene muchas aristas, conviene 
+utilizar \pause \invisible<1-3> { la implementación básica ($O(n^2)$) } } } 
+\end{itemize} 
+\end{frame}
+
 \subsection{Camino mínimo en una grilla}
 \begin{frame}
 Puntos principales:
@@ -527,9 +575,221 @@ Bordes
 \end{frame}
 
 \section{Árbol generador mínimo}
+
+\subsection{\textquestiondown Qué es un árbol generador mínimo?}
+
+\begin{frame}{\textquestiondown Qué es un árbol?}
+\begin{block}{Árboles}
+Un árbol es un tipo especial de grafo no dirigido. Es un grafo donde 
+entre cualquier par de nodos existe un único camino que los conecta 
+(notar que en particular, todos los nodos tienen que estar conectados entre sí).
+\end{block}
+
+Los árboles tienen mil propiedades interesantes, como $m = n -1$, 
+que no tiene ciclos y más cosas sobre las que hoy no hablaremos.
+\end{frame}
+
+\begin{frame}{\textquestiondown Qué es un árbol generador mínimo?}
+
+Un \textbf{árbol generador mínimo} es un árbol que utiliza todos los nodos
+del grafo, de manera tal que el costo total de sumar las aristas del grafo
+es mínimo.
+
+\bigskip
+
+Veamos un ejemplo.
+\end{frame}
+
+\begin{frame}{Ejemplo de árbol generador mínimo}
+\begin{center}
+\includegraphics[height=7cm]{mst.png} \\
+\end{center}
+\end{frame}
+
 \subsection{Algoritmo de Prim}
 \begin{frame}
 
+\begin{itemize}
+\item El algoritmo de Prim mantiene un conjunto de nodos $C$ que son los nodos que
+ya fueron conectados entre sí. 
+\item En cada paso, elige la arista más barata entre algún nodo de $C$ y un 
+nodo no agregado todavía. Al elegir la arista, se agrega el nodo nuevo a $C$. 
+\item De esta forma, en cada paso hay un nodo nuevo sumándose al 
+conjunto de nodos ya conectados entre sí. 
+\item Luego de $n-1$ pasos, habremos agregado todos los nodos de la forma más
+barata posible: obtendremos un árbol generador mínimo.
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Algoritmo de Prim - Ejemplo}
+
+\begin{pgfpicture}{0cm}{0cm}{11cm}{7cm}
+	\pgfsetlinewidth{1pt}
+	\pgfnodecircle{v1}[stroke]{\pgfxy(2,3)}{2mm}			
+	\pgfputat{\pgfxy(2,3)}{\pgfbox[center,center]{1}}
+	\pgfnodecircle{v2}[stroke]{\pgfxy(4,5)}{2mm}
+	\pgfputat{\pgfxy(4,5)}{\pgfbox[center,center]{2}}
+	\pgfnodecircle{v3}[stroke]{\pgfxy(7,5)}{2mm}
+	\pgfputat{\pgfxy(7,5)}{\pgfbox[center,center]{3}}
+	\pgfnodecircle{v4}[stroke]{\pgfxy(9,3)}{2mm}
+	\pgfputat{\pgfxy(9,3)}{\pgfbox[center,center]{4}}
+	\pgfnodecircle{v5}[stroke]{\pgfxy(7,1)}{2mm}
+	\pgfputat{\pgfxy(7,1)}{\pgfbox[center,center]{5}}
+	\pgfnodecircle{v6}[stroke]{\pgfxy(4,1)}{2mm}
+	\pgfputat{\pgfxy(4,1)}{\pgfbox[center,center]{6}}
+	\pgfnodesetsepend{3pt}
+	\pgfsetarrowsend{Triangle[scale=0.7pt]}
+    \pgfnodeconnline{v1}{v2}
+	\pgfnodeconnline{v1}{v6}			
+	\pgfnodeconnline{v1}{v3}			
+	\pgfnodelabel{v1}{v2}[0.5][5pt]{\pgfbox[center,center]{4}}			
+	\pgfnodeconnline{v2}{v3}
+	\pgfnodelabel{v2}{v3}[0.5][5pt]{\pgfbox[center,center]{3}}						
+	\pgfnodeconnline{v3}{v4}
+	\pgfnodelabel{v3}{v4}[0.5][5pt]{\pgfbox[center,center]{1}}						
+	\pgfnodeconnline{v5}{v4}
+	\pgfnodelabel{v5}{v4}[0.5][5pt]{\pgfbox[center,center]{4}}						
+	\pgfnodeconnline{v6}{v5}			
+	\pgfnodelabel{v6}{v5}[0.5][5pt]{\pgfbox[center,center]{3}}			
+	\pgfnodelabel{v1}{v6}[0.5][5pt]{\pgfbox[center,center]{3}}			
+	\pgfnodelabel{v1}{v3}[0.5][5pt]{\pgfbox[center,center]{7}}			
+	\pgfnodeconnline{v2}{v5}			
+	\pgfnodelabel{v2}{v5}[0.5][5pt]{\pgfbox[center,center]{1}}			
+	\pgfnodeconnline{v3}{v5}			
+	\pgfnodelabel{v3}{v5}[0.5][5pt]{\pgfbox[center,center]{1}}			
+	
+	\onslide<2-2>{
+		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,\infty,\infty,\infty,\infty,\infty)$}}
+	}
+	\onslide<2-3>{
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1\}$}}
+	}
+	
+	\color{orange}
+	\onslide<2->{
+		\pgfnodecircle{v1}[stroke]{\pgfxy(2,3)}{2mm}			
+	}
+	
+	\color{black}
+	\onslide<3-5>{
+	   \pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,\infty,\infty,3)$}}
+	}
+	
+	\onslide<3->{
+		\color{darkgreen}
+		\pgfnodeconnline{v1}{v2}
+		\pgfnodeconnline{v1}{v6}			
+		\pgfnodeconnline{v1}{v3}
+	}
+	
+	\color{black}
+	\onslide<4-6>{
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6\}$}}
+	}
+	
+	\color{orange}
+	\onslide<4->{
+		\pgfnodecircle{v6}[stroke]{\pgfxy(4,1)}{2mm}			
+		\pgfnodeconnline{v1}{v6}			
+	}
+	
+	\color{blue}
+	\onslide<5-5>{
+		\pgfnodeconnline{v6}{v5}
+	}
+	
+	\color{black}
+	\onslide<6-8>{
+	  \pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,\infty,6,3)$}}
+	}
+	
+	\color{darkgreen}
+	\onslide<6-8>{
+		\pgfnodeconnline{v6}{v5}
+	}
+	
+	\color{black}		
+	\onslide<7-9>{
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6,2\}$}}
+	}
+	
+	\color{orange}
+	\onslide<7->{
+		\pgfnodecircle{v5}[stroke]{\pgfxy(7,1)}{2mm}
+		\pgfnodeconnline{v6}{v5}
+	}
+	
+	\color{blue}
+	\onslide<8-8>{
+		\pgfnodeconnline{v5}{v4}
+	}
+	
+	\color{darkgreen}
+	\onslide<9-11>{
+		\pgfnodeconnline{v5}{v4}
+		\color{black}
+		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,\infty,5,3)$}}
+	}
+	
+	\color{black}
+	\onslide<10-12>{
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6,2,5\}$}}
+	}
+
+	\color{orange}
+	\onslide<10->{
+		\pgfnodecircle{v2}[stroke]{\pgfxy(4,5)}{2mm}		
+		\pgfnodeconnline{v1}{v2}
+	}
+	
+	\color{blue}
+	\onslide<11-11>{
+		\pgfnodeconnline{v5}{v4}
+	}
+	
+	\color{black}
+	\onslide<12-14>{
+		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,9,5,3)$}}
+		\color{darkgreen}
+		\pgfnodeconnline{v5}{v4}
+	}
+	
+	\color{black}
+	\onslide<13-15>{
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6,2,5,3\}$}}
+	}
+
+	\color{orange}
+	\onslide<13->{
+		\pgfnodecircle{v3}[stroke]{\pgfxy(7,5)}{2mm}			
+		\pgfnodeconnline{v1}{v3}
+	}
+	
+	\color{blue}
+	\onslide<14-14>{
+		\pgfnodeconnline{v3}{v4}
+	}
+	
+	\color{black}
+	\onslide<15->{
+		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,8,5,3)$}}
+		\color{darkgreen}
+		\pgfnodeconnline{v3}{v4}
+	}
+	
+	\onslide<16->{
+	  \color{black}
+		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6,2,5,3,4\}$}}
+	}
+
+	\color{orange}
+	\onslide<16->{
+		\pgfnodecircle{v4}[stroke]{\pgfxy(9,3)}{2mm}			
+		\pgfnodeconnline{v3}{v4}
+	}
+\end{pgfpicture}
 \end{frame}
 
 \begin{frame}
