@@ -1,11 +1,5 @@
 \documentclass[compress]{beamer}
 
-% sudo apt install texlive-latex-base
-% sudo apt install latex-beamer
-% sudo apt install texlive-lang-spanish
-% sudo apt install geany
-% sudo apt install texlive-fonts-recommended
-
 \mode<presentation>
 {
   %\usetheme{Warsaw}
@@ -277,20 +271,22 @@ Este algoritmo fue creado por uno de los padres de la computación,
 Edger W. Dijkstra, en 1956. Sirve para cualquier grafo con pesos (dirigido
 o no) \textbf{siempre y cuando sus pesos no sean negativos}.
 
-\bigskip
+\end{frame}
 
-El algoritmo calcula las distancias mínimas desde un nodo inicial a todos 
+\begin{frame}{Idea del algoritmo de Dijkstra}
+\begin{itemize}
+\item El algoritmo calcula las distancias mínimas desde un nodo inicial a todos 
 los demás. Para hacerlo, en cada paso se toma el nodo más cercano al inicial
 que aún no fue visitado (le diremos $v$). Este nodo tiene calculada la menor distancia
-al nodo inicial (\textquestiondown por qué?). Ahora, recalculamos todas
-los caminos mínimos, teniendo en cuenta a $v$ como camino intermedio.
-Así, en cada paso tendremos un subconjunto de nodos que ya tienen calculada
+al nodo inicial (\textquestiondown por qué?). 
+\item Luego, recalculamos todas los caminos mínimos, teniendo en cuenta a 
+$v$ como camino intermedio.
+\item Así, en cada paso tendremos un subconjunto de nodos que ya tienen calculada
 su mínima distancia y los demás tienen calculada su mínima distancia si solo
-puedo usar los nodos del conjunto como nodos intermedios. Con cada
-iteración agregaremos un nodo más a nuestro conjunto, hasta resolver el 
+puedo usar los nodos del conjunto como nodos intermedios. 
+\item Con cada iteración agregaremos un nodo más a nuestro conjunto, hasta resolver el 
 problema en su totalidad.
-
-\bigskip
+\end{itemize}
 
 Veamos un ejemplo.
 \end{frame}
@@ -313,8 +309,8 @@ Veamos un ejemplo.
 	\pgfnodecircle{v6}[stroke]{\pgfxy(4,1)}{2mm}
 	\pgfputat{\pgfxy(4,1)}{\pgfbox[center,center]{6}}
 	\pgfnodesetsepend{3pt}
-	\pgfsetarrowsend{Triangle[scale=0.7pt]}
-    \pgfnodeconnline{v1}{v2}
+	\pgfsetarrowsend{latex}
+    	\pgfnodeconnline{v1}{v2}
 	\pgfnodeconnline{v1}{v6}			
 	\pgfnodeconnline{v1}{v3}			
 	\pgfnodelabel{v1}{v2}[0.5][5pt]{\pgfbox[center,center]{4}}			
@@ -505,6 +501,7 @@ Dijkstra (Grafo G, nodo inicial s)
      para cada w en sucesores (G, v) hacer
          si distancia[w] > distancia[v] + peso (v, w) entonces
             distancia[w] = distancia[v] + peso (v, w)
+            padre[w] = v
 
 \end{lstlisting}
 \end{frame}
@@ -566,12 +563,15 @@ utilizar \pause \invisible<1-3> { la implementación básica ($O(n^2)$) } } }
 \end{frame}
 
 \subsection{Camino mínimo en una grilla}
-\begin{frame}
-Puntos principales:
-Vector de movimientos
-Representar una dirección y un giro
-Bordes
+Hallemos el camino mínimo entre dos casillas $(a,b)$ y $(c,d)$ de una matriz de $m \times n$.
+Al programar nos puede servir usar los siguientes trucos de los que hablaremos:
 
+\begin{frame}
+\begin{itemize}
+\item Vector de movimientos (dx, dy)
+\item Representar una dirección (0, 1, 2, 3 en los arreglos de arriba) y un giro (sumar mod 4)
+\item Bordes (hacer padding)
+\end{itemize}
 \end{frame}
 
 \section{Árbol generador mínimo}
@@ -604,6 +604,21 @@ Veamos un ejemplo.
 \begin{center}
 \includegraphics[height=7cm]{mst.png} \\
 \end{center}
+\end{frame}
+
+\begin{frame}{\textquestiondown Para qué sirve encontrar un árbol generador mínimo?}
+Este problema es muy relevante, porque en diversas situaciones hallarlo
+resuelve nuestro problema. Muchas veces, a simple vista no es nada obvio
+que se resuelve con esto.
+
+\bigskip
+
+En un país con muchas ciudades, nos piden que creemos rutas de manera tal que
+se pueda viajar de cualquier ciudad a cualquier otra usando la menor cantidad
+de dinero posible. Para algunos pares de ciudades (que son las ciudades entre las
+que tenemos permitido crear una ruta) sabemos el costo de crear una ruta entre ellos.
+\textquestiondown Qué rutas deberíamos construir para lograr el objetivo?
+
 \end{frame}
 
 \subsection{Algoritmo de Prim}
@@ -640,8 +655,8 @@ barata posible: obtendremos un árbol generador mínimo.
 	\pgfnodecircle{v6}[stroke]{\pgfxy(4,1)}{2mm}
 	\pgfputat{\pgfxy(4,1)}{\pgfbox[center,center]{6}}
 	\pgfnodesetsepend{3pt}
-	\pgfsetarrowsend{Triangle[scale=0.7pt]}
-    \pgfnodeconnline{v1}{v2}
+	%\pgfsetarrowsend{Triangle[scale=0.7pt]}
+    	\pgfnodeconnline{v1}{v2}
 	\pgfnodeconnline{v1}{v6}			
 	\pgfnodeconnline{v1}{v3}			
 	\pgfnodelabel{v1}{v2}[0.5][5pt]{\pgfbox[center,center]{4}}			
@@ -679,9 +694,18 @@ barata posible: obtendremos un árbol generador mínimo.
 	
 	\onslide<3->{
 		\color{darkgreen}
-		\pgfnodeconnline{v1}{v2}
 		\pgfnodeconnline{v1}{v6}			
 		\pgfnodeconnline{v1}{v3}
+	}
+
+	\onslide<3-10>{
+		\color{darkgreen}
+		\pgfnodeconnline{v1}{v3}
+	}
+
+	\onslide<3-12>{
+		\color{darkgreen}
+		\pgfnodeconnline{v1}{v2}
 	}
 	
 	\color{black}
@@ -724,11 +748,15 @@ barata posible: obtendremos un árbol generador mínimo.
 	\color{blue}
 	\onslide<8-8>{
 		\pgfnodeconnline{v5}{v4}
+		\pgfnodeconnline{v5}{v2}
+		\pgfnodeconnline{v5}{v3}
 	}
 	
 	\color{darkgreen}
-	\onslide<9-11>{
+	\onslide<9-12>{
 		\pgfnodeconnline{v5}{v4}
+		\pgfnodeconnline{v5}{v2}
+		\pgfnodeconnline{v5}{v3}
 		\color{black}
 		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,\infty,5,3)$}}
 	}
@@ -740,13 +768,31 @@ barata posible: obtendremos un árbol generador mínimo.
 
 	\color{orange}
 	\onslide<10->{
-		\pgfnodecircle{v2}[stroke]{\pgfxy(4,5)}{2mm}		
-		\pgfnodeconnline{v1}{v2}
+		\pgfnodecircle{v3}[stroke]{\pgfxy(7,5)}{2mm}		
+		\pgfnodeconnline{v5}{v3}
 	}
 	
 	\color{blue}
 	\onslide<11-11>{
-		\pgfnodeconnline{v5}{v4}
+		\pgfnodeconnline{v2}{v3}
+		\pgfnodeconnline{v3}{v4}
+	}
+
+	\color{red}
+	\onslide<11-11>{
+		\pgfnodeconnline{v1}{v3}
+	}
+
+	\color{darkgreen}
+	\onslide<12-14>{
+		\pgfnodeconnline{v2}{v3}
+		\pgfnodeconnline{v3}{v4}
+		\pgfnodeconnline{v1}{v2}
+	}
+
+	\color{black}
+	\onslide<12->{
+		\pgfnodeconnline{v1}{v3}
 	}
 	
 	\color{black}
@@ -763,25 +809,20 @@ barata posible: obtendremos un árbol generador mínimo.
 
 	\color{orange}
 	\onslide<13->{
-		\pgfnodecircle{v3}[stroke]{\pgfxy(7,5)}{2mm}			
-		\pgfnodeconnline{v1}{v3}
+		\pgfnodecircle{v2}[stroke]{\pgfxy(4,5)}{2mm}			
+		\pgfnodeconnline{v5}{v2}
 	}
 	
-	\color{blue}
+	\color{red}
 	\onslide<14-14>{
-		\pgfnodeconnline{v3}{v4}
+		\pgfnodeconnline{v1}{v2}
+		\pgfnodeconnline{v2}{v3}
 	}
 	
-	\color{black}
-	\onslide<15->{
-		\pgfputat{\pgfxy(5,7)}{\pgfbox[left,top]{$\pi=(0,4,7,8,5,3)$}}
-		\color{darkgreen}
+	\color{darkgreen}
+	\onslide<15-15>{
 		\pgfnodeconnline{v3}{v4}
-	}
-	
-	\onslide<16->{
-	  \color{black}
-		\pgfputat{\pgfxy(1,7)}{\pgfbox[left,top]{$S=\{1,6,2,5,3,4\}$}}
+		\pgfnodeconnline{v4}{v5}
 	}
 
 	\color{orange}
@@ -791,6 +832,51 @@ barata posible: obtendremos un árbol generador mínimo.
 	}
 \end{pgfpicture}
 \end{frame}
+
+\begin{frame}[fragile]{Pseudocódigo de Prim sin cola de prioridad}
+\begin{lstlisting}
+Prim (Grafo G, nodo inicial s)
+  visitado[n] = {false, ..., false} // guarda si un nodo ya fue visitado
+  distancia[n] = {Infinito, ..., Infinito} // guarda las distancias de cada nodo al conjunto visitado
+  
+  para cada w en V[G] hacer
+     si existe arista entre s y w entonces
+         distancia[w] = peso (s, w)
+
+  distancia[s] = 0
+  visitado[s] = true
+  mientras que no esten visitados todos hacer 
+     v = nodo de menor distancia del conjunto que no fue visitado aun (itero el arreglo)
+     visitado[v] = true
+     para cada w en los vecinos de v hacer
+         si distancia[w] > peso (v, w) entonces
+            distancia[w] = peso (v, w)
+            padre[w] = v
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudocódigo de Prim con cola de prioridad}
+\begin{lstlisting}
+Prim (Grafo G, nodo_fuente s)       
+   para todo u en V[G] hacer
+       distancia[u] = INFINITO
+       padre[u] = NULL
+       visitado[u] = false
+       
+   distancia[s] = 0
+   adicionar (cola, (distancia[s], s))
+   
+   mientras que cola no sea vacia hacer
+       u = extraer_minimo(cola)
+       visitado[u] = true
+       para todo v en vecinos de u hacer
+           si no visitado[v] y distancia[v] > peso(u, v) hacer
+              distancia[v] = peso(u, v)
+              padre[v] = u
+              adicionar(cola, (distancia[v], v))
+\end{lstlisting}
+\end{frame}
+
 
 \begin{frame}
 \begin{center}
