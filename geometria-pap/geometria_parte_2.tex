@@ -233,6 +233,7 @@ veces. Reflexionemos un momento acá, ¿hace falta esto?
 \end{frame}
 
 \subsection{Sweep line - problemas más complejos}
+\subsubsection{Área de unión de rectángulos}
 \begin{frame}{Área de unión de rectángulos}
 
 \begin{block}{Problema}
@@ -344,10 +345,41 @@ sola vez).
 La idea está clara, pero ¿qué estructura debo utilizar para poder actualizar
 los segmentos rápidamente?
 
-%%%%%%%%% TODO %%%%%%%%%
+\bigpause
+
+La estructura deberá soportar las siguientes operaciones:
+\begin{itemize}
+\item Insertar un segmento $[l, r]$
+\item Borrar un segmento existente
+\item Hacer una query con la unión de todos los segmentos
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Estructuras de datos - implementación}
+Por cada nodo $u$, guardamos dos valores: $u.minRepeticiones$ y $u.respuesta$.
+
+\begin{itemize}
+\item $u.minRepeticiones$ es el mínimo de intervalos que hay en un punto del rango
+\item $u.respuesta$ es la longitud total del conjunto de puntos donde se alcanza ese mínimo
+\end{itemize}
+
+Ante un update lazy, cuando viene un segmento simplemente sumo 1 al valor mínimo
+de repeticiones para el rango adecuado (y lo otro se actualiza acorde).
+
+Cuando se va un segmento, lo mismo pero resto un segmento.
 
 \end{frame}
 
+\begin{frame}
+Ante una query de los nodos, si $u.minRepeticiones > 0$ significa que 
+todo el intervalo está cubierto y por lo tanto puedo tomar su longitud
+completa como respuesta.\\
+
+Si $u.minRepeticiones = 0$, lo que busco es el complemento de $u.respuesta$,
+es decir, la longitud de los intervalos donde hay al menos un intervalo.
+\end{frame}
+
+\subsubsection{Mummy Madness}
 \begin{frame}{Mummy Madness - WF 2011}
 
 Nos encontramos en el desierto del Sahara, que modelamos como una grilla
@@ -394,17 +426,33 @@ utilizando estos cuadrados.
 
 \end{frame}
 
-\begin{frame}
 
-Lo que queremos ver es si el cuadrado formado nuestros posibles lugares
+\begin{frame}
+Lo que queremos ver se puede reescribir pensando 
+si el cuadrado formado nuestros posibles lugares
 finales está cubierto completamente por la unión de los cuadrados de las 
-momias. De ser así, no tenemos escapatoria. 
+momias. De ser así, no tenemos escapatoria. \\
 
 \bigpause
 
+\invisible<1>{
+Si encontramos un punto que podría dejarnos a salvo, ¿eso significa que podremos
+alcanzarlo? Tal vez nos come una momia en el medio y no podemos llegar a él.
+}
+\end{frame}
+
+\begin{frame}
+Por suerte para nosotros, ¡sí!\\
+Si nos comiera una momia antes, es porque la momia puede llegar a la misma casilla
+en donde estaba yo. Entonces en tiempo $T$ la momia debería alcanzar la
+casilla que supuestamente era un punto que nos dejaba a salvo. 
+
+\bigpause
+
+\invisible<1>{
 Ahora hacemos búsqueda binaria en $T$. ¿Cuál puede ser un límite superior
 para la búsqueda binaria?
-
+}
 \end{frame}
 
 \section{Planaridad}
@@ -493,18 +541,6 @@ Como consecuencia de lo anterior, notamos que:
 
 Estos son los ejemplos no planares con menor cantidad de nodos y aristas, respectivamente.
 
-\end{frame}
-
-\begin{frame}{Referencias}
-   \begin{itemize}
-   \item \textit{Introduction to Algorithms, 2nd Edition}. MIT Press. \\ Thomas H. Cormen
-   \textbf{Sección 33} (Computational Geometry)
-   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry1}
-   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry2}
-   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry3}
-   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=lineSweep}
-  \end{itemize}
-  
 \end{frame}
 
 \section{Aritmética}
@@ -654,6 +690,19 @@ Ahora bien, como $b \mod{a} > \frac{a}{2}$ deducimos que $r = 1$. En otras palab
 Como $s$ es por definici\'on $a \mod{(b \mod{a})}$, acabamos de ver que el menor n\'umero del par se redujo a la mitad de su valor original en dos pasos.
 \end{enumerate}
 
+\end{frame}
+
+
+\begin{frame}{Referencias}
+   \begin{itemize}
+   \item \textit{Introduction to Algorithms, 2nd Edition}. MIT Press. \\ Thomas H. Cormen
+   \textbf{Sección 33} (Computational Geometry)
+   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry1}
+   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry2}
+   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry3}
+   \item \url{https://www.topcoder.com/tc?module=Static&d1=tutorials&d2=lineSweep}
+  \end{itemize}
+  
 \end{frame}
 
 \end{document}
