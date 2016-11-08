@@ -97,6 +97,10 @@
 \newcommand{\im}{\text{Im}}
 \newcommand{\re}{\text{Re}}
 
+\newcommand{\tabu}{\hspace*{0.7cm}}
+\newcommand{\ctabu}{\hspace*{0.8cm}}
+\newcommand{\htabu}{\hspace*{0.25cm}}
+
 % If you wish to uncover everything in a step-wise fashion, uncomment
 % the following command:
 
@@ -116,6 +120,64 @@
 \end{frame}
 
 \section{Técnicas de barrido}
+
+\subsection{Sweep ray}
+\begin{frame}
+La clase pasada vimos el algoritmo de Graham Scan para obtener la convex hull
+de un conjunto de puntos. \\
+
+\bigskip
+Usaremos el mismo algoritmo para resolver algunos otros problemas.
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Problema}
+Dados $n$ puntos $p_1, \ldots p_n \in \mathbb{R}^2$, hallar la 
+cantidad de triángulos obtusángulos que se pueden formar.
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Solución}
+\begin{itemize}
+\item Haremos un sweep ray, pero su implementación deberá ser más cuidadosa
+pues debo girar $2\pi$ radianes.
+
+\item Fijo el nodo que será el vértice correspondiente al ángulo obtuso. Ahora sólo
+debo encontrar los otros dos.
+
+\item Tengo un rayo que decide quién será el primer vértice a analizar. Luego, habrá
+un intervalo de amplitud de ángulo, donde todos los nodos contenidos en 
+ese intervalo son posibles terceros vértices. Cuento cuántos son en cada
+instante.
+
+\item Puedo mantener el conjunto de vértices candidatos en un $set$, y como
+podemos observar un nodo será insertado y removido exactamente una vez.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Problema}
+Dados $n$ puntos en la grilla ($p_1, \ldots p_n \in \mathbb{Z}^2$), 
+hallar la cantidad de triángulos isósceles que se pueden formar.
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{itemize}
+\item Primero fijo un punto que será el vértice opuesto al lado diferente.
+\item Ahora debo contar la cantidad de puntos a igual distancia, pues
+todos ellos son posibles otros vértices del triángulo isósceles.
+\item Para ello, ordeno los puntos según su distancia al centro.
+\item Luego falta restar los triángulos equiláteros, que contamos varias
+veces. Reflexionemos un momento acá, ¿hace falta esto?
+\end{itemize}
+\end{frame}
+
 \subsection{Sweep circle}
 
 \begin{frame}{¿Qu\'e es sweep circle?}
@@ -172,12 +234,180 @@
 
 \subsection{Sweep line - problemas más complejos}
 \begin{frame}{Área de unión de rectángulos}
+
+\begin{block}{Problema}
+Dados $n$ rectángulos alineados con respecto a los ejes del plano, 
+¿cuál es el área de la unión de todos ellos?
+\end{block}
+
 %%%%%%%%%%% TODO %%%%%%%%%%%%%
 
 \end{frame}
 
+\begin{frame}
 
-\section{Planaridad (SECCION DE AGUS SIN REVISAR)}
+\begin{center}
+\includegraphics[scale=0.7]{images/rectangle_union.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{itemize}
+\item Haremos un sweep line con una recta vertical, comprimiendo las coordenadas
+(es decir, no reviso todos los valores de $x$ sino solo los interesantes:
+los eventos). ¿Cuáles serán los eventos?
+\pause
+\item Los eventos serán la apertura y clausura de los rectángulos (o sea,
+el borde izquierdo y derecho).
+\item Va a haber un conjunto de rectángulos $vivos$, es decir, los que
+se encuentran activos en el momento analizado. ¿Cuál es el área entre
+el punto $i$ del sweep line y el $i+1$?
+\pause
+\item Como entre dos puntos consecutivos no puede haber dejado de existir
+un rectángulo, el área entre esos dos cortes verticales
+es $(p_{i+1} - p_i) \cdot alturas$ siendo $alturas$ la longitud
+de la totalidad de los rangos (notar que si se superponen, los contamos una
+sola vez).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_3.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_4.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_5.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_6.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_7.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_8.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_9.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_10.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Ejemplo visual - área de unión de rectángulos}
+\begin{center}
+\includegraphics[scale=0.4]{images/sweep_line_11.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Estructuras de datos}
+La idea está clara, pero ¿qué estructura debo utilizar para poder actualizar
+los segmentos rápidamente?
+
+%%%%%%%%% TODO %%%%%%%%%
+
+\end{frame}
+
+\begin{frame}{Mummy Madness - WF 2011}
+
+Nos encontramos en el desierto del Sahara, que modelamos como una grilla
+formada por casillas cuadradas. Nos encontramos en el centro de una casilla
+(especificada en la entrada). En cada instante nos podemos mover a cualquiera 
+de las ocho casillas vecinas posibles.
+\bigskip
+
+Todo sería muy pacífico si no fuera porque varias momias se acaban de despertar:
+ellas también se encuentran en los centros de algunas casillas, y en cada
+paso se moverán a la casilla que más cerca esté de nosotros (en distancia euclídea).
+
+\bigskip
+
+¿Por cuánto tiempo podremos huir antes de que la momia nos atrape? Para este
+problema, si logramos escapar del tablero de $a \times b$, estaremos salvados
+para siempre.
+
+\end{frame}
+
+\begin{frame}{Ejemplo - Mummy Madness}
+
+\begin{center}
+\includegraphics[scale=0.2]{images/mummy_chase.png}
+\end{center}
+
+{\footnotesize
+Link al problema: \texttt{https://icpcarchive.ecs.baylor.edu/index.php?option=onlinejudge\&page=show\_problem\&problem=3137}
+}
+\end{frame}
+
+\begin{frame}
+Quiero ver si en tiempo $T$ existe la posibilidad de que estemos vivos o no.
+
+\begin{block}{Observación clave}
+En tiempo $T$, la persona puede encontrarse en cualquier casilla del
+cuadrado de lado $2T+1$ centrado en su posición inicial. Lo mismo para
+las momias (aunque está más restringido pues siguen a la persona, pero
+con esto alcanza).
+\end{block}
+
+Reescribamos el problema de ver si pudimos sobrevivir hasta tiempo $T$
+utilizando estos cuadrados.
+
+\end{frame}
+
+\begin{frame}
+
+Lo que queremos ver es si el cuadrado formado nuestros posibles lugares
+finales está cubierto completamente por la unión de los cuadrados de las 
+momias. De ser así, no tenemos escapatoria. 
+
+\bigpause
+
+Ahora hacemos búsqueda binaria en $T$. ¿Cuál puede ser un límite superior
+para la búsqueda binaria?
+
+\end{frame}
+
+\section{Planaridad}
 
 \subsection{Definiciones}
 
@@ -277,5 +507,153 @@ Estos son los ejemplos no planares con menor cantidad de nodos y aristas, respec
   
 \end{frame}
 
+\section{Aritmética}
+\begin{frame}{M\'aximo Com\'un Divisor}
+\begin{block}{Definici\'on del m\'aximo com\'un divisor o $mcd$}
+El m\'aximo com\'un divisor entre $a$ y $b$ o $mcd(a,b)$ ($a, b \in \mathbb{N}_0$) es el mayor n\'umero natural que los divide a ambos sin dejar resto. 
+\end{block}  
+
+Por ejemplo, $mcd(2,5) = 1$, $mcd(10,30) = 10$, $mcd(55,77) = 11$, $mcd(15,1) = 1$, $mcd(17,0) = 17$. \\
+\bigskip
+
+Notar que si $mcd(a,b) = k$ entonces $mcd(\frac{a}{k}, \frac{b}{k}) = 1$ pues quitamos todos los factores primos que eran comunes a ambos n\'umeros.
+
+\end{frame}
+
+\begin{frame}{Algoritmos recursivos}
+	\begin{block}{Lema}
+	Sea $a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b-a) = k$.
+	\end{block}
+\bigskip
+
+\pause
+\invisible<1>{
+{\small 
+\textit{\textbf{Demostraci\'on:}} $mcd(a, b) = k$, luego $a = ka'$, $b = kb'$ con $mcd(a', b') = 1$. \\ \bigskip
+
+Veamos que $mcd(a, b-a) = k$: \\
+$mcd(a, b-a) = mcd(ka', kb'-ka') = mcd(ka', k(b'-a'))= k \cdot mcd(a', b'-a')$ \\ \bigskip
+$\Rightarrow mcd(a, b-a) \geq k \cdot 1 = k$. Entonces seguro que $mcd(a, b-a) \geq k$, pero \textquestiondown puede suceder que $mcd(a, b-a) > k$? \\ \bigskip
+
+Supongamos que $mcd(a, b-a) = q > k$. Entonces tenemos que:
+
+\[ 
+\left \{
+  \begin{tabular}{c}
+  $a \equiv 0 \pmod{q}$\\
+  $b-a \equiv 0 \pmod{q}$ 
+  \end{tabular}
+\right.
+\]
+\bigskip
+Luego concluimos que $a \equiv b \equiv 0 \pmod{q}$.
+}
+}
+\end{frame}
+
+\begin{frame}
+Como $a \equiv b \equiv 0 \pmod{q}$, deducimos que $a$ y $b$ son los dos m\'ultiplos de $q$ (y recordemos que por hip\'otesis $q > k$). 
+Pero luego $mcd(a,b) \geq q > k$. \\ \bigskip
+
+\textexclamdown Absurdo pues $mcd(a,b) = k$ por hip\'otesis del ejercicio! Provino de suponer que $mcd(a, b-a) > k$. Luego, 
+como $mcd(a, b-a) \leq k$ y $mcd(a, b-a) \geq k$ deducimos que $mcd(a, b-a) = k$. $\blacksquare$
+
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Lema 1}
+	Sea $a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b-a) = k$.
+\end{block}
+
+Este lema es v\'alido como funci\'on recursiva pero puede ser mejorado. Notemos que si $b-a \geq a$, entonces al aplicar de nuevo el Lema obtendremos
+$mcd(a,b-2a) = k$, y as\'i sucesivamente hasta que $b-xa < a$. Es decir que podemos mejorar el lema 1 aplic\'andolo varias veces para obtener el lema 2.\\ \bigskip
+
+\pause
+\invisible<1>{
+\begin{block}{Lema 2}
+{\small
+	Sea $0 < a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b \pmod{a}) = k$.
+}
+\end{block}
+}
+\end{frame}
+
+\begin{frame}
+\begin{block}{Lema 2}
+	Sea $0 < a \leq b$ ($a, b \in \mathbb{N}_0$), entonces $mcd(a, b) = k$, $mcd(a, b \mod{a}) = k$.
+\end{block}
+\pause
+\invisible<1>{
+{\small 
+\textit{\textbf{Demostraci\'on:}} \\ Como $a \leq b$, $b$ se puede escribir como $b = ra+s$ con $r, s \in \mathbb{N}_0$ y $0 \leq s < a$. \\ \bigskip
+Aplicando sucesivamente el Lema 1, por inducci\'on podemos ver que $mcd(a, b-ra) = k$, pues $b - (r-1)a \geq a$ y por ende vale aplicar el lema por $r$-\'esima vez.
+Ahora bien, $b-ra = s$, y $s$ es justamente el resto de $b$ m\'odulo $a$. Es decir, $s = b \mod{a}$.\\
+En conclusi\'on, queda que $mcd(a,s) = k$, o en otras palabras \\ $mcd(a, b \mod{a}) = k$. $\blacksquare$
+}
+}
+\end{frame}
+
+\begin{frame}
+Entonces ya tenemos una propiedad recursiva que nos permitir\'a hallar $mcd(a,b)$. Pero nos falta saber cu\'ando parar, es decir, los \textbf{casos base}. \\ \bigskip
+\pause
+\invisible<1>{
+$mcd(a,0) = a$ \\
+$mcd(0,a) = a$ \\ \bigskip
+
+Notemos adem\'as que si no fueran casos base incurrir\'iamos en un error, pues $a\mod{0}$ no se puede efectuar.
+}
+\end{frame}
+
+\begin{frame}[fragile]{Pseudoc\'odigo de soluci\'on recursiva}
+\begin{verbatim}
+function mcd (natural a, natural b) {
+      if (a == 0)
+           devolver b
+      if (b == 0)
+           devolver a
+      if (a <= b)
+           devolver mcd(a, b mod a)
+      devolver mcd(a mod b, b)
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{C\'odigo que tira facha}
+\begin{verbatim}
+int mcd (int a, int b) {
+      return (a == 0) ? b : mcd(b,b\%a);
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Demostraci\'on de complejidad}
+Recordemos que en cada paso tomamos m\'odulo del n\'umero m\'as grande sobre el m\'as chico. As\'i, en cada paso obtenemos un par de n\'umeros. Como el $mcd$ es conmutativo, ponemos primero el menor n\'umero y luego el mayor. Como $a \leq b$, en dos pasos de aplicaci\'on del lema 2 se tiene que: \\ \bigskip
+
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+Queremos probar que el algoritmo es $O(\lg a)$, pues $a = min(a,b)$, y para ello demostraremos que cada 2 pasos del algoritmo, $a$ se reduce a la mitad.
+\end{frame}
+
+\begin{frame}{Demostraci\'on de complejidad de las implementaciones del \'item a (cont.)}
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+Queremos probar que el algoritmo es $O(\lg a)$ (pues $a = min(a,b)$) y para ello demostraremos que cada 2 pasos del algoritmo, el m\'inimo del par actual se reduce a la mitad. Si probamos eso, como cada paso es $O(1)$ y habr\'a $O(2\lg a) = O(\lg a)$ pasos, el algoritmo ser\'a $O(\lg a)$.\\ \bigskip
+
+\end{frame}
+
+\begin{frame}
+$mcd(a,b) = mcd(b \mod{a}, a) = mcd(a \mod{(b \mod{a})}, b \mod{a})$ \\ \bigskip
+
+\begin{enumerate}
+\item Si $b \mod{a} \leq \frac{a}{2}$ entonces el m\'inimo n\'umero del par se redujo a la mitad en tan solo un paso. Como en cada paso se reduce cada n\'umero o queda igual, luego de 2 pasos el m\'inimo n\'umero del par original se habr\'a reducido a la mitad.
+\item Si $b \mod{a} > \frac{a}{2}$, veamos que $a \mod{(b \mod{a})}$ ser\'a peque\~no: \\
+\tabu \tabu $a = (b \mod{a})r + s$, pues $b \mod{a} < a$ (por definici\'on de m\'odulo). \\
+
+Ahora bien, como $b \mod{a} > \frac{a}{2}$ deducimos que $r = 1$. En otras palabras, $a = (b \mod{a}) + s \Rightarrow a - (b \mod{a}) = s < a - \frac{a}{2}$, por lo que $s < \frac{a}{2}$. 
+Como $s$ es por definici\'on $a \mod{(b \mod{a})}$, acabamos de ver que el menor n\'umero del par se redujo a la mitad de su valor original en dos pasos.
+\end{enumerate}
+
+\end{frame}
 
 \end{document}
