@@ -658,7 +658,7 @@ function mcd (natural a, natural b) {
 \begin{frame}[fragile]{C\'odigo que tira facha}
 \begin{verbatim}
 int mcd (int a, int b) {
-      return (a == 0) ? b : mcd(b,b\%a);
+      return (a == 0) ? b : mcd(b%a, a);
 }
 \end{verbatim}
 \end{frame}
