@@ -1,0 +1,346 @@
+\documentclass[compress]{beamer}
+
+\mode<presentation>
+{
+  %\usetheme{Warsaw}
+  %\usecolortheme{spruce}
+  % or ...
+	%\useoutertheme{infolines}
+  %\setbeamercovered{transparent}
+  
+  \usetheme{CambridgeUS}
+    \setbeamercolor{item projected}{bg=darkred}
+    \setbeamertemplate{enumerate items}[default]
+    \setbeamertemplate{navigation symbols}{}
+    \setbeamercovered{transparent}
+    \setbeamercolor{block title}{fg=darkred}
+    \setbeamercolor{local structure}{fg=darkred}
+  
+  % or whatever (possibly just delete it)
+}
+
+\usepackage{verbatim} 
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\tikzstyle{block}=[draw opacity=0.7,line width=1.4cm]
+
+\newcommand{\bigpause}{\bigskip \pause}
+
+\lstloadlanguages{C++}
+\lstnewenvironment{code}
+	{%\lstset{	numbers=none, frame=lines, basicstyle=\small\ttfamily, }%
+	 \csname lst@SetFirstLabel\endcsname}
+	{\csname lst@SaveFirstLabel\endcsname}
+\lstset{% general command to set parameter(s)
+	language=C++, basicstyle=\footnotesize\sffamily, keywordstyle=\slshape,
+	emph=[1]{tipo,usa}, emphstyle={[1]\sffamily\bfseries},
+	basewidth={0.47em,0.40em},
+	columns=fixed, fontadjust, resetmargins, xrightmargin=5pt, xleftmargin=15pt,
+	flexiblecolumns=false, tabsize=2, breaklines,	breakatwhitespace=false, extendedchars=true,
+	numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=9pt,
+	frame=l, framesep=3pt,
+}
+
+\usepackage[spanish]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+% or whatever
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+
+\title[Geometr\'ia Computacional] % (optional, use only with long paper titles)
+{Geometr\'ia Computacional}
+
+\author[Melanie Sclar] % (optional, use only with lots of authors)
+{~Melanie Sclar}
+% - Give the names in the same order as the appear in the paper.
+% - Use the \inst{?} command only if the authors have different
+%   affiliation.
+\institute[UBA] % (optional, but mostly needed)
+{
+  %\inst{1}%
+  Facultad de Ciencias Exactas y Naturales\\
+  Universidad de Buenos Aires
+}
+\date[TC 2014] % (optional, should be abbreviation of conference name)
+{Training Camp 2014}
+
+% Ac¿ se puede insertar el logo de la UBA
+% \pgfdeclareimage[height=0.5cm]{university-logo}{university-logo-filename}
+% \logo{\pgfuseimage{university-logo}}
+
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each subsection:
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>{Contenidos}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+\newcommand{\be}{\begin{equation*}}
+\newcommand{\ee}{\end{equation*}}
+\newcommand{\state}[1]{\left|\,#1\,\right\rangle}
+\newcommand{\costate}[1]{\left\langle\,#1\,\right|}
+\newcommand{\trace}{\text{Tr}}
+\newcommand{\su}{\uparrow}
+\newcommand{\sd}{\downarrow}
+\newcommand{\im}{\text{Im}}
+\newcommand{\re}{\text{Re}}
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\begin{document}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Contenidos}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\begin{frame}{Objetivo del trabajo}
+
+El objetivo de este trabajo es entender que las manipulaciones que los
+votantes hacen en una elección puede afectar el resultado de la misma
+más frecuentemente de lo que pensamos.\\
+\bigskip
+
+Formalizaremos las nociones de ``elección'' y ``manipulación'' para luego
+enunciar el teorema a probar, y finalmente probarlo.
+
+\end{frame}
+
+\begin{frame}{Definiciones}
+Supongamos que hay $m$ candidatos en la elección, y sea $[m]$ el conjunto
+que contiene a estas $m$ alternativas. Sea $L$ es el conjunto de órdenes totales sobre $[m]$.\\
+\bigskip
+
+En este modelo, cada votante tendrá un vector de $m$ elementos representando
+el orden total de sus preferencias entre los $m$ candidatos.\\
+\bigskip
+
+Una \textit{social choice function} (SCF) es una función $f : L^n \rightarrow [m]$,
+que toma los $n$ vectores de preferencias de los votantes y elige uno de
+los candidatos.
+
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Definición de manipulación}
+Una \textit{manipulación (útil)} de una SCF $f$ realizada por un
+votante $i$ sobre el perfil $(x_1, \ldots, x_n)$ es una preferencia $x_i'$ 
+tal que el resultado $f(x_i', x_{-i})$ es preferido por el votante $i$
+al resultado original $f(x_i,x_{-i})$.
+\end{block}
+\bigskip
+
+Intuitivamente, una manipulación consiste en que un votante miente al
+mostrar su vector de preferencias y con esta mentira obtiene un rédito:
+el resultado final de la elección le gustará más que si no hubiera mentido.
+
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Definición de poder de manipulación}
+El \textit{poder de manipulación} de un votante $i$ en una SCF $f$ 
+es la probabilidad de que $x_i'$ sea una manipulación útil de $f$
+sobre el perfil $(x_1, \ldots, x_n)$, donde $x_1, \ldots, x_n$ y $x_i'$
+son elegidos al azar uniformemente entre todos los posibles órdenes
+totales de $[m]$.\\
+Lo notamos como $M_i(f)$.
+\end{block}
+\bigskip
+
+Esta no es la definición más precisa, pues asume una distribución uniforme
+sobre las preferencias. Si bien esto no es realista, el objetivo del
+trabajo es lograr una cota inferior para el poder de manipulación (¡y ver
+que es no despreciable!).
+\end{frame}
+
+\begin{frame}{Noción de distancia entre funciones}
+
+Dadas dos funciones $f$ y $g$ que van de un espacio de probabilidad $X$
+a un conjunto $Y$, se define la distancia entre ambas como
+
+$$ \Delta(f, g) = Pr_{x \in X} [f(x) \neq g(x)] $$
+
+Si quiero definir la distancia de una función $f$ a un conjunto $G$ de
+funciones (como podrían serlo las dictaduras), definimos
+
+$$ \Delta(f, G) = min_{g \in G} \Delta(f, g) $$
+
+\end{frame}
+
+\begin{frame}{Teorema principal del trabajo}
+
+\begin{block}{Teorema principal}
+Existe una constante $C > 0$ tal que para todo $\epsilon > 0$, si $f$ es
+una SCF neutral tal que $\Delta(f, Dictaduras) > \epsilon$ y que 
+elige entre 3 candidatos ($m = 3$), 
+entonces $\sum_{i=1}^n M_i(f) \geq C \epsilon^2$
+\end{block}
+\bigskip
+
+$Nota \ 1:$ se dice que $f$ es neutral si los nombres de los candidatos no
+influyen en la decisión final. Es decir, si $\sigma$ es una permutación
+vale que $f(\sigma(x_1), \ldots \sigma(x_n)) = \sigma(f(x_1,\ldots,x_n))$.\\
+\bigskip
+
+$Nota \ 2:$ se dice que $g$ es una dictadura si es una SCF donde 
+se elige siempre el primer elemento del vector de preferencias de 
+algún votante.
+
+\end{frame}
+
+\begin{frame}{Implicancias del teorema}
+\begin{itemize}
+\item Con la prueba de este teorema se puede ver que $max_i \ M_i(f) \geq 
+\Omega(1/ \sqrt n)$.
+
+\item No se puede acotar por una cota que no dependa de
+$n$ pues para el método de voto plural vale que 
+$M_i(f) = \Theta(1/\sqrt n)$
+
+\item Los autores dejan abierto el problema para $m > 3$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+
+\begin{frame}{¡Probémoslo!}
+
+Para probar el teorema daremos un approach "top down". Hay 2 lemas que
+juntos nos permiten implicar lo buscado. Primero los enumeraremos y 
+entenderemos por qué resuelven el problema, y luego los probaremos uno
+por uno.
+
+\end{frame}
+
+%\begin{frame} {Lema 1}
+%Para todo $m$ y $\epsilon > 0$ existe un $\delta > 0$ tal que si 
+%$F = f^{\otimes \ \binom{m}{2}}$ es una IAA GSWF neutral sobre $m$
+%alternativas con $f : \{0,1\}^n \rightarrow \{0,1\}$, $\Delta(f, DICT) > \epsilon$
+%\end{frame}
+
+\begin{frame}
+\begin{block}{Lema 2}
+Para todo $m$ existe $\delta > 0$ tal que para todo $\epsilon > 0$ 
+vale que si $f$ es una SCF neutral entre $m$ candidatos tal que 
+$\Delta(f, Dictaduras \ \cup \ AntiDictaduras) > \epsilon$
+entonces para todo $(a, b)$ se tiene que $M^{a,b}(f) \geq \delta$.\\
+\bigskip
+
+Además, para $m = 3$ vale que $\delta = C\epsilon^2$ donde $C>0$ es una
+constante.
+\end{block}
+\bigskip
+
+\begin{block}{Lema 3}
+Para toda SCF $f$ con $m = 3$ y todo $a, b \in A$, 
+$M^{a,b}(f) \leq 6 \sum_i M_i(f)$
+\end{block}
+\end{frame}
+
+\begin{frame}
+Sea $f$ una SCF neutral con $m = 3$ tal que $\Delta(f, Dictaduras) > \epsilon$.
+
+\begin{itemize}
+\item Si $\Delta(f, AntiDictaduras) > \epsilon$: \\
+$$ C\epsilon^2 \leq M^{a,b}(f) \leq 6 \sum_i M_i(f)$$ 
+\item Si $\Delta(f, AntiDictaduras) \leq \epsilon$
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%% NO ME SALE %%%%%%%%%%%%%%%%%%
+%% Es un argumento de la pinta de principio de palomar, 
+
+QED.
+\end{frame}
+
+\begin{frame}
+Ahora resta probar los dos lemas: comencemos por el lema 2. Para ello,
+necesitaremos un teorema probado en otro trabajo, pero antes de presentarlo
+explicamos las definiciones necesarias para entender su enunciado.
+
+%La consecuencia de este teorema puede ser reescrita como 
+%$\Delta(F, CW) \geq \delta$, pues $\Delta(f, CW)$ representa la 
+%probabilidad de que $f$ no coincida con un elemento de $CW$.
+
+%%%%%%%%%%%%%%%%%%%%%%% DEFINIR %%%%%%%%%%%%%%%%
+% GSWF
+% IIA
+% CW
+
+\end{frame}
+
+\begin{frame}
+
+\begin{block}{Lema 1 - consecuencia directa de $[Ka02]$}
+Para todo $m$ y $\epsilon > 0$ existe un $\delta > 0$ tal que si 
+$F = f^{\otimes \ \binom{m}{2}}$ es una IIA GSWF neutral sobre $m$
+alternativas con $f : \{0,1\}^n \rightarrow \{0,1\}$ entonces vale que
+$$\Delta(f, Dictaduras \cup AntiDictaduras) > \epsilon
+\Rightarrow \Delta(F, CW) \geq \delta$$
+\bigskip
+Para $m=3,4,5$ vale que $\delta = C \epsilon$ con $C > 0$ una constante.
+\end{block}
+
+\begin{block}{Lema 1' - contrapositiva de Lema 1 para $m = 3$}
+Para todo $\epsilon > 0$ existe un $\delta > 0$ tal que si 
+$F = f^{\otimes \ \binom{m}{2}}$ es una IIA GSWF neutral con 
+$f : \{0,1\}^n \rightarrow \{0,1\}$ entonces vale que
+
+$$ \Delta(F, CW) > C \epsilon \Rightarrow \Delta(f, Dictaduras \cup AntiDictaduras) \leq \epsilon$$
+\end{block}
+\end{frame}
+
+\begin{frame}
+En vez de probar $Lema \ 2$, vamos a probar su contrapositiva también.
+
+\begin{block}{Lema 2' - contrapositiva de Lema 2}
+Existe $\delta > 0$ tal que para todo $\epsilon > 0$ si $f$ es una SCF
+neutral entonces para todo $a, b$ vale que
+
+$$ M^{a,b}(f) \leq C \epsilon^2 \Rightarrow \Delta(f, Dictaduras \cup AntiDictaduras) \leq \epsilon$$
+\end{block}
+\end{frame}
+
+\begin{frame}{Hoja de ruta para el lema 2}
+\begin{itemize}
+\item Dada una SCF $f$ con $M^{a,b}(f) \leq C \epsilon^2$ para todo $a,b$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\begin{frame}{Prueba del lema 3 - siguen las definiciones}
+$$A(z^{a,b}) := \{x | x^{a,b} = z^{a,b}, f(x) = a\}$$
+$$B(z^{a,b}) := \{x | x^{a,b} = z^{a,b}, f(x) = b\}$$
+
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\end{document}
