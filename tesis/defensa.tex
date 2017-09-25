@@ -189,7 +189,7 @@ Las ubicaciones de las fijaciones no son aleatorias y los patrones que describen
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Modelos de saliencia (3)}
 \begin{itemize}
 \item Los modelos de saliencia toman en cuenta diferentes factores que afectan la atención visual, como ser los colores, el contraste, la orientación, la presencia de texto o humanos, entre otros.
 \item Estos factores se clasifican en dos categorías: \textit{bottom-up} (dependiendo únicamente de las características de la imagen) y \textit{top-down} (dependiendo de la tarea que se realice).
@@ -223,6 +223,16 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 \item Distancia de Mannan
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Métricas de comparación de \textit{scanpaths}}
+{Edit distance - ejemplo}
+
+\begin{center}
+    \includegraphics[width=\linewidth]{images/edit-distance.png} 
+\end{center}
+
+\end{frame}
+
 
 \section{Experimentos}
 \subsection{Creación de un corpus de imágenes}
@@ -348,27 +358,40 @@ Vemos que la longitud de las sacadas decrece a lo largo del tiempo, consistentem
 
 Notar que el sesgo también se marca en la primera fijación. \end{frame}
 
-\begin{frame}
+%\begin{frame}
 
-\begin{center}
-\includegraphics[width=0.6\textwidth]{images/scatter-first-fixation.png}
-\end{center}
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{images/scatter-first-fixation.png}
+%\end{center}
 
-{\scriptsize
-Notar que el sesgo también se marca en la primera fijación. Algunos sujetos movieron rápidamente los ojos desde la fijación pedida hacia el centro, y grabamos la primera fijación allí.}
+%{\scriptsize
+%Notar que el sesgo también se marca en la primera fijación. Algunos sujetos movieron rápidamente los ojos desde la fijación pedida hacia el centro, y grabamos la primera fijación allí.}
 
-\bigskip
+%\bigskip
 
-{\scriptsize Se observa que la distancia del punto de la primera fijación al centro de la imagen correlaciona con cuán bien los participantes respetan la instrucción de mantener la mirada en el punto pedido.}
-\end{frame}
+%{\scriptsize Se observa que la distancia del punto de la primera fijación al centro de la imagen correlaciona con cuán bien los participantes respetan la instrucción de mantener la mirada en el punto pedido.}
+%\end{frame}
 
 \begin{frame}{Cambios en incerteza según cantidad de fijaciones}
-\begin{center}
-\includegraphics[width=0.6\textwidth]{images/mean_circle_size.png}
-\end{center}
+\centering
+  \begin{columns}[T]
+    \begin{column}{.4\textwidth}
 
-{\scriptsize
-Además vimos en la tesis que existe un efecto "desmoralizador": si llevamos algunos ensayos sin encontrar el target, la probabilidad de colocar un círculo más grande se incrementa. Lo mismo vale pero en mucha menor medida para el caso opuesto (varios ensayos encontrando targets).}
+        {\scriptsize
+
+        Vemos que los radios de los círculos son muy diferentes según si el target fue encontrado o no. Esto muestra que los sujetos tienen consciencia de que encontraron el target. \\ \bigskip
+
+        Además vimos en la tesis que existe un efecto "desmoralizador": si llevamos algunos ensayos sin encontrar el target, la probabilidad de colocar un círculo más grande se incrementa. Lo mismo vale pero en mucha menor medida para el caso opuesto (varios ensayos encontrando targets). \par}
+
+
+    \end{column}
+    \begin{column}{.6\textwidth}
+        \begin{center}
+        \centering
+        \includegraphics[width=\linewidth]{images/mean_circle_size.png}
+        \end{center}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 % esto se puede saltear
@@ -913,10 +936,24 @@ de distractores y equivocaciones en el juzgamiento de la mejor posición para ob
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\Huge ¡Gracias!
-\huge ¿Preguntas?
+\begin{frame}{Trabajos futuros}
+\begin{itemize}
+\item Amplificar el corpues de imágenes y de descripción de objetos para confirmar más fuertemente los resultados.
+\item Explorar distintos aspectos de los features tipo II para extraer más datos. Este approach es novedoso con respecto a los otros trabajos que vimos.
+\item Utilizar un mapa de visibilidad más sofisticado, por ejemplo el de Bradley et al. 2004.
+\item Reprodujimos por primera vez el modelo de Geisler en escenas naturales, con resultados muy prometedores.
+\end{itemize}
+\end{frame}
 
+
+\begin{frame}
+\begin{center}
+\Huge ¡Gracias!
+
+\bigskip
+
+\huge ¿Preguntas?
+\end{center}
 \end{frame}
 
 \end{document}
