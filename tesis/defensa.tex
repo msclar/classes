@@ -473,7 +473,7 @@ Antes de referirnos a cómo creamos los modelos tenemos que entender cómo vamos
 \begin{frame}{Modelo de saliencia de Judd (2)}
 \begin{itemize}
 \item Computa 33 features por imagen, que incluyen: mapas de colores (RGB), mapa de intensidad, mapa de orientación, mapa de contraste, mapa de distancia al centro de la imagen, mapa de distancia al horizonte, mapas de detección de rostros, autos, personas y dos mapas de saliencia base.
-\item Separamos las imágenes en dos conjuntos: uno de entrenamiento y uno de testing. 
+\item Separa las imágenes en dos conjuntos: uno de entrenamiento y uno de testing. 
 \item Luego entrena una Support Vector Machine (SVM) con las muestras positivas y negativas del conjunto de imágenes de entrenamiento. Utiliza un kernel lineal por su simplicidad, y porque probó otros kernels pero no mejoró la performance.
 \item \textbf{Este modelo permite muy fácilmente agregar y remover features} que se adapten mejor a nuestra tarea.
 \end{itemize}
