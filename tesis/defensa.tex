@@ -23,6 +23,23 @@
 \usepackage{verbatim} 
 \usepackage{listings}
 \usepackage{tikz}
+
+%\usepackage[noend]{algpseudocode}
+\usepackage{algorithm,algorithmic}
+
+
+\usepackage{amsmath}
+\usepackage{blindtext}
+\usepackage{wrapfig}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumerate}
+\usepackage[colorinlistoftodos]{todonotes}
+
+
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes}
 \tikzstyle{block}=[draw opacity=0.7,line width=1.4cm]
@@ -115,7 +132,17 @@
   \titlepage
 \end{frame}
 
+
 \section{Introducción}
+\begin{frame}{Motivación}
+\begin{itemize}
+\item Uno de los desafíos centrales de la ciencia cognitiva y de la neurociencia de la visión es entender cómo percibimos una escena visual.
+\item Más de medio siglo después de las primeras experimentaciones, todavía no existe una teoría formal de la interacción entre la percepción y los movimientos oculares.
+\item Una idea que se viene fortaleciendo en la última década es la aplicación de un marco bayesiano para explicar cómo el cerebro es capaz de generalizar y realizar inferencias sobre entornos ruidosos y saturados de información.
+\item \textbf{Buscamos dar un paso adelante en el entendimiento de la visión humana combinando modelos para comprenderla a nivel algorítmico.}
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Agudeza visual}
 \begin{itemize}
 \item Podemos ver en detalle solo una pequeña porción del campo visual, aquella que cae en un área de la retina llamada \textit{fóvea}.
@@ -183,8 +210,8 @@ Esto no significa que la saliencia deje de ser relevante, pero se suele combinar
 \end{frame}
 
 % pasar para más adelante
-\begin{frame}{Modelos de movimientos oculares en imágenes}
-\end{frame}
+%\begin{frame}{Modelos de movimientos oculares en imágenes}
+%\end{frame}
 
 \begin{frame}{Métricas de comparación de \textit{scanpaths}}
 No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay muchos factores a tener en cuenta. Así, algunos de los más famosos son:
@@ -197,7 +224,9 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Creación de un corpus de interiores}
+\section{Experimentos}
+\subsection{Creación de un corpus de imágenes}
+\begin{frame}{Creación de un corpus de imágenes de interiores}
 \begin{itemize}
 \item Recolectamos 134 imágenes de interiores de $768 \times 1024$ píxeles.
 \item Las imágenes son en blanco y negro y no tienen personas ni texto.
@@ -206,6 +235,7 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 \end{itemize}
 \end{frame}
 
+\subsection{Experimento de búsqueda visual}
 \begin{frame}{Diseño del experimento de búsqueda visual}
 
 \begin{itemize}
@@ -319,15 +349,17 @@ Vemos que la longitud de las sacadas decrece a lo largo del tiempo, consistentem
 Notar que el sesgo también se marca en la primera fijación. \end{frame}
 
 \begin{frame}
-Notar que el sesgo también se marca en la primera fijación. Algunos sujetos movieron rápidamente los ojos desde la fijación pedida hacia el centro, y grabamos la primera fijación allí.
 
 \begin{center}
 \includegraphics[width=0.6\textwidth]{images/scatter-first-fixation.png}
 \end{center}
 
+{\scriptsize
+Notar que el sesgo también se marca en la primera fijación. Algunos sujetos movieron rápidamente los ojos desde la fijación pedida hacia el centro, y grabamos la primera fijación allí.}
+
 \bigskip
 
-Se observa que la distancia del punto de la primera fijación al centro de la imagen correlaciona con cuán bien los participantes respetan la instrucción de mantener la mirada en el punto pedido.
+{\scriptsize Se observa que la distancia del punto de la primera fijación al centro de la imagen correlaciona con cuán bien los participantes respetan la instrucción de mantener la mirada en el punto pedido.}
 \end{frame}
 
 \begin{frame}{Cambios en incerteza según cantidad de fijaciones}
@@ -335,22 +367,22 @@ Se observa que la distancia del punto de la primera fijación al centro de la im
 \includegraphics[width=0.6\textwidth]{images/mean_circle_size.png}
 \end{center}
 
-Además vimos en la tesis que existe un efecto "desmoralizador": si llevamos algunos ensayos sin encontrar el target, la probabilidad de colocar un círculo más grande se incrementa. Lo mismo vale pero en mucha menor medida para el caso opuesto (varios ensayos encontrando targets).
+{\scriptsize
+Además vimos en la tesis que existe un efecto "desmoralizador": si llevamos algunos ensayos sin encontrar el target, la probabilidad de colocar un círculo más grande se incrementa. Lo mismo vale pero en mucha menor medida para el caso opuesto (varios ensayos encontrando targets).}
 \end{frame}
 
 % esto se puede saltear
-\begin{frame}{Influencia de ensayos anteriores en la respuesta actual}
-\begin{center}
-\includegraphics[width=0.6\textwidth]{images/desconfianza-rta-dif-relativa.png}
-\end{center}
-\end{frame}
+%\begin{frame}{Influencia de ensayos anteriores en la respuesta actual}
+%\begin{center}
+%\includegraphics[width=0.6\textwidth]{images/desconfianza-rta-dif-relativa.png}
+%\end{center}
+%\end{frame}
 
-\section{Modelos predictivos}
 \begin{frame}
 Ahora mostraremos los distintos modelos predictivos que proponemos. Estos modelos se dividen en dos clases según si predicen las regiones a ser fijadas (\textbf{modelos estáticos}) o si predicen el orden de las fijaciones (\textbf{modelos dinámicos}).
 \end{frame}
 
-\subsection{Modelos estáticos}
+\section{Modelos estáticos}
 
 \begin{frame}
 Crearemos nuestros propios modelos estáticos, basados en el mapa de saliencia creado por Judd. Lo compararemos con dos modelos del estado del arte, SAM y MLNet. 
@@ -404,11 +436,7 @@ Antes de referirnos a cómo creamos los modelos tenemos que entender cómo vamos
 \caption{Performance de SAM}
 \end{figure}
 
-Tanto SAM como MLNet predicen mejor las primeras fijaciones que las últimas. Mostamos aquí solo SAM.
-
-\bigskip
-
-Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la performance recién mostrada.
+{\footnotesize Tanto SAM como MLNet predicen mejor las primeras fijaciones que las últimas. Mostamos aquí solo SAM. Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la performance recién mostrada.}
 
 \end{frame}
 
@@ -506,7 +534,7 @@ Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la perform
 %Como trabajo futuro
 %\end{frame}
 
-\subsubsection{Resultados de modelos estáticos}
+\subsection{Resultados de modelos estáticos}
 \begin{frame}
 \begin{itemize}
 \item Ya comentamos que medimos la performance mirando el TPR vs. el porcentaje que es considerado saliente
@@ -559,17 +587,42 @@ Veamos los resultados de los otros dos grupos de fijaciones.
 \end{center}
 \end{frame}
 
-% TODO
-%\begin{frame}{Predicción del centro del círculo de respuesta}
-%\begin{itemize}
-%\item Utilizamos los algoritmos 
-%\end{itemize}
-%\end{frame}
+\begin{frame}{Predicción del centro del círculo de respuesta}
+\begin{itemize}
+\item Consideramos los puntos que son centro del círculo de respuesta como si fueran fijaciones.
+\item Así, utilizamos el mismo modelo de Judd que acabamos de explicar, pero agregando una feature más que modele la distancia al target.
+\item Esta feature ayuda a modelar el conocimiento del target. De todas formas, testearemos en todos los ensayos y luego sólo en aquellos donde el target no fue encontrado.
+\end{itemize}
+\end{frame}
 
 \begin{frame}{Predicción del centro del círculo de respuesta}
+{Predicción sobre todos los ensayos, comparando con todos los humanos}
 \begin{center}
-%\includegraphics[width=0.7\textwidth]{images/results_fix_7_to_12_all.png} 
+\includegraphics[width=0.7\textwidth]{images/guess_all_1.png} 
 \end{center}
+\end{frame}
+
+\begin{frame}{Predicción del centro del círculo de respuesta}
+{Predicción sobre los ensayos con target no encontrado, comparando con todos los humanos}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/guess_notfound_1.png} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Predicción del centro del círculo de respuesta}
+{Predicción sobre todos los ensayos, comparando con los humanos. Para una comparación más justa, separamos los sujetos en conjunto de training y test ($\frac{3}{4}$ y $\frac{1}{4}$)}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/guess_all_test_2.png} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Predicción del centro del círculo de respuesta}
+\begin{itemize}
+\item Si bien pudimos alcanzar performances muy similares a las humanas, deberíamos obtener datos de más sujetos para poder concluirlo fehacientemente.
+\item Por ser un modelo de machine learning, si bien logramos predicciones muy buenas todavía no podemos describir intuitivamente cuáles son las regiones más probables.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Conclusión de los modelos estáticos}
@@ -580,8 +633,8 @@ Como conclusión de todo esto vemos que pudimos superar a los modelos del estado
 El modelo estático de la tercera fijación será utilizado como base para los modelos dinámicos.
 \end{frame}
 
-\subsection{Modelos dinámicos}
-\subsubsection{Modelo de Najemnik \& Geisler}
+\section{Modelos dinámicos}
+\subsection{Modelo de Najemnik \& Geisler}
 \begin{frame}{Modelos dinámicos}
 Los modelos dinámicos son aquellos que no solo predicen las áreas donde
 recaerán las fijaciones, sino que buscarán predecir posiciones concretas de las fijaciones y un orden probable de las mismas.
@@ -591,7 +644,7 @@ recaerán las fijaciones, sino que buscarán predecir posiciones concretas de la
 Para esto nos basaremos en un modelo bayesiano propuesto por Najemnik \& Geisler en 2005. 
 \end{frame}
 
-\begin{frame}
+\begin{frame}{Modelo de Najemnik \& Geisler}
 
 $$s_{i}(T) = prior(i) \cdot \prod_{t=1}^T exp\left(d'^2_{ik(t)} W_{ik(t)}\right)$$
 
@@ -659,6 +712,7 @@ $$ \sigma^2_{ik(t)} = \displaystyle\frac{1}{d'^2_{ik(t)}}$$
 \begin{itemize}
 \item El modelo de Najemnik \& Geisler fue realizado sobre una escena artificial, y a pesar de ser muy citado en la literatura nuestro trabajo es el primero que lo aplica en escenas naturales. 
 \item La tarea original tenía 25 posiciones posibles a fijar, así que tuvimos que discretizar nuestra imagen con una grilla de $15 \times 20$ puntos posibles a fijar para poder computar la integral para todos los puntos en un tiempo razonable.
+\item Utilizamos como $prior$ el mapa de saliencia que obtuvimos extendiendo Judd en lo que explicamos anteriormente. Además lo compararemos con la utilización de MLNet, un modelo de saliencia del estado del arte.
 \end{itemize}
 \end{frame}
 
@@ -676,5 +730,193 @@ $$\mu_{ik(t)}^2 = \mu^1_{ik(t)} \cdot \Big(d'_{ik(t)} + \dfrac{1}{2}\Big) + corr
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Otros modelos dinámicos}
+\begin{itemize}
+\item Además de los dos modelos basados en Geisler, agregamos otros modelos baseline para comparar performance.
+\item Veamos resumidamente de qué se tratan los tres modelos:
+\begin{itemize}
+\item Modelo de sesgo de la fijación central: toma una gaussiana bidimensional como mapa de probabilidad, con pico en el centro de la imagen
+\item Modelo dinámico estadístico
+\item Modelo greedy
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Otros modelos dinámicos}
+{Modelo dinámico estadístico}
+
+Este modelo intenta imitar crear $scanpaths$ que imiten las características que encontramos en el análisis anterior.
+
+\begin{center}
+\includegraphics[width=\textwidth]{images/modelo-estadistico.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Otros modelos dinámicos}
+{Modelo greedy}
+
+Este modelo toma el punto de mayor probabilidad en cada paso. Se contrapone con los modelos bayesianos, que miran una fijación hacia el futuro para decidir la fijación a realizar. 
+
+\begin{center}
+\includegraphics[width=\textwidth]{images/modelo-greedy.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+Vamos a analizar la performance de los cinco modelos (los tres más básicos y los dos bayesianos). Para ellos debemos definir qué métricas utilizaremos.
+\end{frame}
+
+
+\subsection{Métodos de comparación de scanpaths adaptados a nuestra tarea}
+\begin{frame}{Métodos de comparación de scanpaths adaptados a nuestra tarea}
+
+\begin{itemize}
+\item Los métodos de comparación que mencionamos no siempre se adaptan bien a nuestra tarea, así que debimos adaptarlos.
+\item Además, en los trabajos que vimos se suele hacer un análisis de consistencia entre sujetos pero no cuán parecido es un modelo predictivo a los humanos.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Métricas utilizadas}
+\begin{itemize}
+\item Métrica de número de fijaciones esperadas para
+encontrar el target, solo para ensayos exitosos.
+\item Métrica de performance sobre todos los ensayos: calcula la proporción de ensayos exitosos promedio entre todos los ensayos con $c$ sacadas permitidas $c = \{2,4,8,12\}$.
+\item Métrica de string edit distance.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Métricas utilizadas}
+{Métrica de número de fijaciones esperadas para
+encontrar el target, solo para ensayos exitosos.}
+
+Sea $s \in Sujetos$. Tomaremos todos los demás sujetos como conjunto de entrenamiento. Sea $$ E = \{(s,m) \ | \ \text{el sujeto $s$ encontró el target en la imagen $m$}\}$$
+
+se tiene que
+
+$$ \mu_m
+= \left\{ \begin{array}{lc}
+             \avg\limits_{j:(j,m) \in E} cf_{j,m} &  si \ |\{j:(j,m) \in E\}| \geq 3 \\
+             +\infty &  \text{caso contrario}
+          \end{array}
+   \right.$$
+
+$$mean\_length_s = \avg\limits_{m:(s,m) \in E} |cf_{s,m} - \mu_m| $$
+
+$mean\_length_s$ es el valor que tomaremos como métrica.
+\end{frame}
+
+\begin{frame}{Métricas utilizadas}
+{Métrica de string editing distance}
+
+Sea $s \in Sujetos$. Calcularemos la edit distance media por imagen de todos los scanpaths de longitud al menos $c$, truncando solo las primeras $c$ fijaciones ($c \in \{2,4,6,8,10\}$). Sea $\mu_{m,c}^{lev}$ a la string edit distance media de la imagen $m$ en la categoría $c$.
+
+$$\mu_{m,c,s}^{lev} = \avg\limits_{s \neq i} \ lev(scanpath_{s,m}[1..c], scanpath_{i,m}[1..c])$$
+
+$$mean\_lev_{s,c} = \avg\limits_{1 \leq m \leq |images|} \ |\mu_{m,c}^{lev} - \mu_{m,c,s}^{lev}|$$
+
+$mean\_lev_{s,c}$ es el valor que tomaremos como métrica.
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Repetimos el procedimiento separando cada vez un sujeto $s$ diferente.
+\item Luego, cuando queremos comparar un nuevo modelo contra los humanos, tomamos a $s$ como el nuevo modelo y todos los humanos irán al conjunto de entrenamiento.
+\item ¿Cómo cuantificamos cuán parecido es un modelo a los sujetos?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\begin{itemize}
+\item Aplicamos tres tests de normalidad para todas las métricas en todas sus categorías.
+\item Los tests de normalidad son tests de hipótesis cuya hipótesis nula es que la muestra pertenece a una distribución normal.
+\item En la gran mayoría de los casos no pudo rechazarse la hipótesis nula, por lo que podemos decir que los datos no están fuertemente sesgados.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Como los datos no están fuertemente sesgados, calcularemos la media y la varianza y veremos cuán similar es un valor al resto de la muestra utilizando el \textit{z-score}.
+\item El \textit{z-score} o \textit{Standard score} se define como
+
+$$ z = \left| \dfrac{x-\mu}{\sigma}\right|$$
+
+es decir, cuán lejos se encuentra $x$ de la media en unidades de desvío estándar.
+\end{itemize}
+\end{frame}
+
+\subsection{Resultados de modelos dinámicos}
+\begin{frame}{Resultados respecto de la primera métrica}
+{Métrica de número de fijaciones esperadas para
+encontrar el target, solo para ensayos exitosos $z_{length}^s$.}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/z-score-mean-length.png}
+\end{center}
+
+{\scriptsize Logramos separar bien los modelos menos complejos de los bayesianos. Recordemos que como utilizamos \textit{z-score}, \textbf{cuanto menor el valor obtenido, mejor}.}
+%/home/melanie/Downloads/tesis-de-licenciatura/results/z-score-mean-length.png
+%/home/melanie/Downloads/tesis-de-licenciatura/results/z-score-percent-found.png
+\end{frame}
+
+\begin{frame}{Resultados respecto de la segunda métrica}
+{Métrica de performance sobre todos los ensayos: calcula la proporción de ensayos exitosos promedio entre todos los ensayos con $c$ sacadas permitidas $c = \{2,4,8,12\}$}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{images/z-score-percent-found.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Resultados respecto de la segunda métrica}
+{Métrica de performance sobre todos los ensayos: calcula la proporción de ensayos exitosos promedio entre todos los ensayos con $c$ sacadas permitidas $c = \{2,4,8,12\}$}
+
+Nuevamente, la segunda métrica logró separar los modelos de los bayesianos de los otros, con una clara ventaja de los modelos bayesianos. Como nuestra métrica tiene 4 categorías, sumamos los \textit{z-score} de las 4 categorías para el análisis.
+\end{frame}
+
+\begin{frame}{Resultados respecto de la tercera métrica}
+{Métrica de string edit distance}
+
+\begin{center}
+\includegraphics[width=\textwidth]{images/z-score-mean-edit-distance.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}{Resultados respecto de la tercera métrica}
+{Métrica de string edit distance}
+\begin{itemize}
+\item La performance de los modelos es muy similar para aquellos con baja variabilidad, es decir, para pares $(a, b)$ más altos. \item La performance parece mejorar levemente para modelos de más alta varianza. Esto puede producirse porque al bajar la variabilidad el modelo simula un poco peor la existencia
+de distractores y equivocaciones en el juzgamiento de la mejor posición para obtener el target.
+\item \textbf{Se observa una mejora utilizando nuestro modelo de saliencia como base respecto de MLNet.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusiones de los modelos dinámicos}
+\begin{itemize}
+\item El modelo $greedy$ obtuvo una performance mucho peor que los modelos bayesianos, por lo que concluimos que considerar una fijación hacia el futuro logra modelar una búsqueda visual más similar a la humana
+\item Los modelos no bayesianos tuvieron performance muy pobres
+\item El modelo de Geisler original con constantes $(3,2)$ o $(3,4)$ o el modelo de Geisler modificado con constantes $(3,4)$ parecen buenas elecciones.
+\item Se observa una mejora utilizando nuestro modelo de saliencia como base (Judd extendido) respecto de MLNet.
+\end{itemize}
+\end{frame}
+
+\section{Conclusiones}
+\begin{frame}{Conclusiones generales}
+\begin{itemize}
+\item Creamos un corpus de imágenes y de descripción de objetos que abrimos a la comunidad.
+\item Creamos un modelo de saliencia que predice mejor la tercera fijación que los modelos del estado del arte. ¡Aún hay muchos puntos para mejorar aún más!
+\item Predijimos con muy buenos resultados los centros de los círculos de respuesta y describimos ciertas características de los radios de los círculos de respuesta.
+\item Reprodujimos por primera vez el modelo de Geisler en escenas naturales, con resultados muy prometedores.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\Huge ¡Gracias!
+\huge ¿Preguntas?
+
+\end{frame}
 
 \end{document}
