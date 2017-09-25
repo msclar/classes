@@ -53,14 +53,20 @@
 \usepackage{caption}
 \usepackage{multirow}
 \usepackage{subcaption}
+\usepackage{wrapfig}
 
 \usepackage{times}
 \usepackage[T1]{fontenc}
 % Or whatever. Note that the encoding and the font should match. If T1
 % does not look nice, try deleting the line with the fontenc.
 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\avg}{avg}
+\DeclareMathOperator*{\stdev}{stdev}
+\newcommand\normtwo[1]{\left\lVert#1\right\rVert_2}
 
-\title[Análisis y predicción de la búsqueda visual humana] % (optional, use only with long paper titles)
+
+\title[Defensa de tesis de licenciatura] % (optional, use only with long paper titles)
 {Análisis y predicción de la búsqueda visual humana}
 
 \author[Melanie Sclar] % (optional, use only with lots of authors)
@@ -416,7 +422,8 @@ Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la perform
 \begin{frame}{Modelo de saliencia de Judd (2)}
 \begin{itemize}
 \item Computa 33 features por imagen, que incluyen: mapas de colores (RGB), mapa de intensidad, mapa de orientación, mapa de contraste, mapa de distancia al centro de la imagen, mapa de distancia al horizonte, mapas de detección de rostros, autos, personas y dos mapas de saliencia base.
-\item Luego entrena una Support Vector Machine (SVM) con las muestras positivas y negativas mencionadas anteriormente. Utiliza un kernel lineal por su simplicidad, y porque probó otros kernels pero no mejoró la performance.
+\item Separamos las imágenes en dos conjuntos: uno de entrenamiento y uno de testing. 
+\item Luego entrena una Support Vector Machine (SVM) con las muestras positivas y negativas del conjunto de imágenes de entrenamiento. Utiliza un kernel lineal por su simplicidad, y porque probó otros kernels pero no mejoró la performance.
 \item \textbf{Este modelo permite muy fácilmente agregar y remover features} que se adapten mejor a nuestra tarea.
 \end{itemize}
 \end{frame}
@@ -424,6 +431,7 @@ Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la perform
 \begin{frame}
 \begin{itemize}
 \item Tomaremos el modelo de Judd y lo adaptaremos a nuestra tarea, que es de búsqueda visual.
+\item Tomamos 100 imágenes para el conjunto de entrenamiento y 34 imágenes para el conjunto de testing.
 \item Removemos los features de rostros, autos, personas y los features de colores pues no aparecen en nuestra tarea.
 \item Utilizamos SAM y MLNet como mapas de saliencia base, que son del estado del arte.
 \bigskip
@@ -449,26 +457,223 @@ Veamos cómo es el modelo de Judd y como lo extenderemos para mejorar la perform
 \end{frame}
 
 \begin{frame}{Extensión de Judd - tipo II}
+
+  \begin{columns}[T]
+    \begin{column}{.65\textwidth}
+        \begin{itemize}
+        \item Queremos crear un mapa teniendo en cuenta la semántica de la imagen mostrada.
+        \item Recordemos que sabemos a qué clase de objeto pertenece cada target por nuestro experimento online. 
+        \item Además, encontramos un dataset llamado LabelMe que posee 8000 imágenes segmentadas y parcialmente anotadas por la comunidad.
+        \end{itemize}
+    \end{column}
+    \begin{column}{.35\textwidth}
+        \begin{figure}
+        \begin{center}
+        \includegraphics[width=\textwidth]{images/label-me-example.png} 
+        \end{center}
+        \end{figure}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Outline del mapa de tipo II}
+\begin{itemize}
+\item Detectamos a qué clase de objeto pertenece cada target con una palabra en español con nuestra tarea online.
+\item Medimos la distancia de la palabra que representa a cada target respecto de algunas palabras que denotan posición en una escena de interiores (por ejemplo, mesa, piso, techo, ventana, pared
+- las llamaremos \textbf{palabras posicionales}). 
+\item Se toma la palabra posicional más cercana y ésta representará la posición probable del target: esto hipotetizamos que será un indicio de los sectores de la imagen asociados a la palabra posicional. 
+\item El mapa de features será entonces el mapa de las regiones más fuertemente asociadas a la palabra posicional.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.75\textwidth]{images/labelme-global-features-without-horizon.png} 
+\end{center}
+\end{figure}
+
+{\small Creamos un mapa posicional por cada una de las 16 palabras posicionales elegidas, superponiendo las regiones anotadas con la palabra en LabelMe.}
+\end{frame}
+% hago dibujo en el pizarrón de taza ===> vector de taza, mesa ==> vector de mesa 
+
+%\begin{frame}
+%Hay muchos puntos donde se puede seguir explorando en este mapa de features, como tener en cuenta la línea del horizonte para uniformizar las imágenes. 
+
+%Existen detectores del horizonte, pero fueron entrenados en imágenes de exteriores, que tienen un comportamiento distinto que las de interiores. 
+
+%Como trabajo futuro
+%\end{frame}
+
+\subsubsection{Resultados de modelos estáticos}
+\begin{frame}
+\begin{itemize}
+\item Ya comentamos que medimos la performance mirando el TPR vs. el porcentaje que es considerado saliente
+\item En este tipo de tareas se suele tomar a los humanos como \textit{baseline}. Hemos visto que los humanos son fuertemente consistentes en las primeras fijaciones, y el nivel de predicción baja con el número de fijaciones.
+\end{itemize}
+
+\bigskip
+Veamos cómo el modelo de Judd extendido con nuestras features predice las fijaciones humanas, separando las fijaciones en 3 grupos: tercera fijación, fijaciones 4 a 6 y fijaciones 7 a 12.
+
+\end{frame}
+
+\begin{frame}{Resultados tercera fijación}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{images/results_fix_3_to_3_all.png} 
+\end{center}
+
+{\footnotesize En este gráfico no se separan los sujetos en conjunto de entrenamiento y conjunto de testing. }
 \end{frame}
 
 \begin{frame}
-\end{frame}
-
-
-\begin{frame}
-\end{frame}
-
-
-
-
-\section{Modelos dinámicos}
-\begin{frame}
+\begin{itemize}
+\item También hicimos experimentaciones separando los sujetos en un conjunto de entrenamiento y otro de test (25\% para el test set, 75\% para el training set), donde se ve que la performance es muy similar a la alcanzada por los humanos.
+\item Como esto nos deja con muy pocos datos para el test set (a lo sumo $7 \times 34$) los resultados no son concluyentes.
+\item Además, no pudimos concluir cuáles de los 3 features que agregamos son los que tienen más peso, pues depende del conjunto de entrenamiento elegido.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
+
+La tercera fijación es especialmente importante pues es la que utilizamos como mapa de base para los modelos dinámicos.
+
+\bigskip
+
+Utilizamos la tercera fijación pues las dos anteriores están afectadas por el sesgo de la fijación pedida y de la fijación central.
+
+\bigskip
+
+Veamos los resultados de los otros dos grupos de fijaciones.
+\end{frame}
+
+\begin{frame}{Resultados fijaciones 4 a 6}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/results_fix_4_to_6_all.png} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Resultados fijaciones 7 a 12}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{images/results_fix_7_to_12_all.png} 
+\end{center}
+\end{frame}
+
+% TODO
+%\begin{frame}{Predicción del centro del círculo de respuesta}
+%\begin{itemize}
+%\item Utilizamos los algoritmos 
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}{Predicción del centro del círculo de respuesta}
+\begin{center}
+%\includegraphics[width=0.7\textwidth]{images/results_fix_7_to_12_all.png} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Conclusión de los modelos estáticos}
+
+Como conclusión de todo esto vemos que pudimos superar a los modelos del estado del arte en la predicción de la tercera fijación y que logramos predecir con bastante eficiencia dónde los sujetos colocarán el centro de su círculo de respuesta.
+\bigskip
+
+El modelo estático de la tercera fijación será utilizado como base para los modelos dinámicos.
+\end{frame}
+
+\subsection{Modelos dinámicos}
+\subsubsection{Modelo de Najemnik \& Geisler}
+\begin{frame}{Modelos dinámicos}
+Los modelos dinámicos son aquellos que no solo predicen las áreas donde
+recaerán las fijaciones, sino que buscarán predecir posiciones concretas de las fijaciones y un orden probable de las mismas.
+
+\bigskip
+
+Para esto nos basaremos en un modelo bayesiano propuesto por Najemnik \& Geisler en 2005. 
+\end{frame}
+
+\begin{frame}
+
+$$s_{i}(T) = prior(i) \cdot \prod_{t=1}^T exp\left(d'^2_{ik(t)} W_{ik(t)}\right)$$
+
+$$p_i(T) = \displaystyle\frac{s_i(T)}{\sum_{j=1}^n s_j(T)}$$
+
+\bigskip
+$prior$ es la probabilidad a priori, $t$ es el número de fijación, $d'_{ik(t)}$ y $W_{ik(t)}$ son el mapa de visibilidad y la respuesta del target en la ubicación $i$ cuando el sujeto se encuentra fijando la vista en $k(t)$. $T$ es el número de fijación actual y $k(t)$ representa la ubicación de la fijación en tiempo $t$.
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{images/visibility-map.png} 
+\end{center}
+\end{figure}
+
+Ejemplo de mapa de visibilidad, que es lo que modela $d'$. En nuestro trabajo lo simplificamos como una gaussiana bidimensional con los parámetros de forma que imiten a los de la imagen (extraída del paper de Najemnik \& Geisler).%, pero existen otros modelos más sofisticados y computacionalmente prohibitivos para el presente trabajo, que queda como trabajo futuro. 
+
+\end{frame}
+
+\begin{frame}
+
+$$k_{opt}(T+1) = \argmax\limits_{k(T+1)} \sum_{i=1}^n p_i(T)p(C|i,k(T+1))$$
+
+donde $p(C|i,k(T+1))$ es la probabilidad de estar en lo correcto dado que la ubicación del target es $i$ y la ubicación de la próxima fijación es $k(T+1)$. $p(C|i,k(T+1))$ puede calcularse de la siguiente forma:
+\end{frame}
+
+\begin{frame}
+
+
+{\footnotesize
+$$p(C | i, k(T+1)) = \int\limits_{-\infty}^{+\infty}\phi(w) \prod\limits_{j \neq i} \Phi\left(\dfrac{2d'_{ik(T+1)} w -2\ln\dfrac{p_j(T)}{p_i(T)} + d_{jk(T+1)}^{\prime 2} + d_{ik(T+1)}^{\prime 2}}{2d'_{jk(T+1)}} \right) dw$$}
+
+Optimizamos el cálculo numérico de la integral detectando un intervalo fuera del cual la integral valdrá 0 (aprovechándonos de que $\phi$ converge rápidamente a 0 lejos del 0 y que $\Phi(w)$ es menor a $10^{87}$ cuando $w < 20$).
+\end{frame}
+
+\begin{frame}{Definición de $W$}
+\begin{itemize}
+\item Dijimos que $W_{ik(t)}$ es la respuesta del template de la $i$-ésima posible ubicación dado que el sujeto está fijando en $k(t)$ en la fijación número $t$. 
+
+\item En otras palabras, representa cuán parecida es la posición $i$ al target para el observador que se encuentra fijando su vista en $k(t)$. 
+\item Definimos $W_{ik(t)} \in \mathcal{N}(\mu_{ik(t)}, \sigma^2_{ik(t)})$ donde:
+
+$$ \mu_{ik(t)}
+= \left\{ \begin{array}{lc}
+             0.5 &  si \ i = \ ubicaci\acute{o}n \ del \ target \\
+             -0.5 &  caso \ contrario 
+          \end{array}
+   \right.$$
+
+$$ \sigma^2_{ik(t)} = \displaystyle\frac{1}{d'^2_{ik(t)}}$$ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Propiedades del modelo de Najemnik \& Geisler}
+\begin{itemize}
+\item Sin necesidad de colocarlo explícitamente, este modelo logra inhibición de retorno así como longitudes de sacadas moderadas. 
+\item Una propiedad interesante del modelo es que por su naturaleza probabilística es capaz de predecir varias sucesiones de movimientos oculares según como se fije $W$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Aplicando el modelo de Geisler a nuestra tarea}
+\begin{itemize}
+\item El modelo de Najemnik \& Geisler fue realizado sobre una escena artificial, y a pesar de ser muy citado en la literatura nuestro trabajo es el primero que lo aplica en escenas naturales. 
+\item La tarea original tenía 25 posiciones posibles a fijar, así que tuvimos que discretizar nuestra imagen con una grilla de $15 \times 20$ puntos posibles a fijar para poder computar la integral para todos los puntos en un tiempo razonable.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Aplicando el modelo de Geisler a nuestra tarea (II)}
+\begin{itemize}
+\item Como la visibilidad tiende a cero cuando un punto está muy lejos de donde se está realizando la fijación, la varianza tendería a infinito. Es por esto que trasladamos la varianza de la siguiente forma:
+
+$$ \sigma_{ik(t)}^1 = \displaystyle\frac{1}{a \cdot d'_{ik(t)} + b} \text{ con } a = 3 \text{ y } b = 4$$ 
+
+Además experimentamos con otros pares $(a,b)$.
+\item Además de usar $W$ como fue definido originalmente, experimentamos con una modificación 
+
+$$\mu_{ik(t)}^2 = \mu^1_{ik(t)} \cdot \Big(d'_{ik(t)} + \dfrac{1}{2}\Big) + corr_{i} \cdot \Big(\dfrac{3}{2} - d'_{ik(t)}\Big) \in [-1, 1]$$
+
+\end{itemize}
 \end{frame}
 
 
