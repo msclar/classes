@@ -364,54 +364,6 @@ Explicaremos los distintos modelos predictivos que proponemos. Estos modelos se 
 \bigskip
 
 Primero veremos los modelos estáticos y el mejor de ellos será utilizado como base para los modelos dinámicos.
-
-\bigskip
-
-Para entender los modelos estáticos es clave entender cómo medimos su performance.
-\end{frame}
-
-\begin{frame}{Medidas de performance}
-
-\begin{itemize}
-{\small 
-\item Tomamos los mapas de saliencia como un clasificador binario de los píxeles. Un porcentaje dado de los píxeles de una imagen se clasifican como positivos y el resto negativos.
-\item Se grafica para varios porcentajes el True Positive Rate (TPR), que indica qué porción de las fijaciones caen en la región saliente.
-}
-\end{itemize}
-
-\begin{figure}[b]
-    \centering
-    \begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/grayscale_100_oliva.jpg}
-        \caption{\footnotesize Imagen original} \label{fig:grayscale_100_oliva}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/example-salient-percent-8-14.png} 
-        \caption{\footnotesize 8.14\% más saliente de la imagen según SAM} \label{fig:example-salient-percent-8-14}
-    \end{subfigure}
-	\hfill
-	\begin{subfigure}[t]{0.3\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{images/example-salient-percent-27-73.png} 
-        \caption{\footnotesize
-27.73\% más saliente de la imagen según SAM} \label{fig:example-salient-percent-27-73}
-    \end{subfigure}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}{Modelos de saliencia como predictores de fijaciones}
-
-\begin{figure}
-\includegraphics[width=0.5\linewidth]{images/sam_all_fix_small.png} 
-\caption{Performance de SAM}
-\end{figure}
-
-{\footnotesize Tanto SAM como MLNet predicen mejor las primeras fijaciones que las últimas. Veamos cómo es el modelo de Judd y como lo extenderemos.}
-
 \end{frame}
 
 \begin{frame}{Modelo de saliencia de Judd}
@@ -491,6 +443,40 @@ Para entender los modelos estáticos es clave entender cómo medimos su performa
 \end{frame}
 
 \subsubsection{Resultados de modelos estáticos}
+\begin{frame}{Medidas de performance}
+
+\begin{itemize}
+{\small 
+\item Tomamos los mapas de saliencia como un clasificador binario de los píxeles. Un porcentaje dado de los píxeles de una imagen se clasifican como positivos y el resto negativos.
+\item Se grafica para varios porcentajes el True Positive Rate (TPR), que indica qué porción de las fijaciones caen en la región saliente.
+}
+\end{itemize}
+
+\begin{figure}[b]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/grayscale_100_oliva.jpg}
+        \caption{\footnotesize Imagen original} \label{fig:grayscale_100_oliva}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/example-salient-percent-8-14.png} 
+        \caption{\footnotesize 8.14\% más saliente de la imagen según SAM} \label{fig:example-salient-percent-8-14}
+    \end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/example-salient-percent-27-73.png} 
+        \caption{\footnotesize
+27.73\% más saliente de la imagen según SAM} \label{fig:example-salient-percent-27-73}
+    \end{subfigure}
+\end{figure}
+
+\end{frame}
+
+
 \begin{frame}{Resultados tercera fijación}
 \begin{center}
 \includegraphics[width=0.75\textwidth]{images/results_fix_3_to_3_all.png} 
@@ -508,19 +494,15 @@ Para entender los modelos estáticos es clave entender cómo medimos su performa
 %\end{frame}
 
 \begin{frame}{Predicción del centro del círculo de respuesta}
-\begin{itemize}
-\item Utilizamos el mismo modelo de Judd que acabamos de explicar, pero agregando una feature más que modele la distancia al target.
-\item Esta feature ayuda a modelar el conocimiento del target. De todas formas, testearemos en todos los ensayos y luego sólo en aquellos donde el target no fue encontrado.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Predicción del centro del círculo de respuesta}
 {Predicción sobre todos los ensayos, comparando con los humanos. Separamos los sujetos en conjunto de training y test ($\frac{3}{4}$ y $\frac{1}{4}$)}
 
 \begin{center}
-\includegraphics[width=0.7\textwidth]{images/guess_all_test_2.png} 
+\includegraphics[width=0.6\textwidth]{images/guess_all_test_2.png} 
 \end{center}
+
+{\footnotesize Utilizamos el mismo modelo de Judd extendido que acabamos de explicar, pero agregando una feature más que modele la distancia al target.}
 \end{frame}
+
 
 %\begin{frame}{Predicción del centro del círculo de respuesta}
 %\begin{itemize}
@@ -670,32 +652,17 @@ encontrar el target, solo para ensayos exitosos.
 {Métrica de número de fijaciones esperadas para
 encontrar el target, solo para ensayos exitosos.}
 
-Sea $s \in Sujetos$. Tomaremos todos los demás sujetos como conjunto de entrenamiento. Sea $$ E = \{(s,m) \ | \ \text{el sujeto $s$ encontró el target en la imagen $m$}\}$$
-
-se tiene que
-
-$$ \mu_m
-= \left\{ \begin{array}{lc}
-             \avg\limits_{j:(j,m) \in E} cf_{j,m} &  si \ |\{j:(j,m) \in E\}| \geq 3 \\
-             +\infty &  \text{caso contrario}
-          \end{array}
-   \right.$$
-
-$$mean\_length_s = \avg\limits_{m:(s,m) \in E} |cf_{s,m} - \mu_m| $$
-
-$mean\_length_s$ es el valor que tomaremos como métrica.
+\begin{center}
+\includegraphics[width=\textwidth]{images/mean_length_explanation.png}
+\end{center}
 \end{frame}
 
 \begin{frame}{Métricas utilizadas}
-{Métrica de string editing distance}
+{Métrica de string edit distance}
 
-Sea $s \in Sujetos$. Calcularemos la edit distance media por imagen de todos los scanpaths de longitud al menos $c$, truncando solo las primeras $c$ fijaciones ($c \in \{2,4,6,8,10\}$). Sea $\mu_{m,c}^{lev}$ a la string edit distance media de la imagen $m$ en la categoría $c$.
-
-$$\mu_{m,c,s}^{lev} = \avg\limits_{s \neq i} \ lev(scanpath_{s,m}[1..c], scanpath_{i,m}[1..c])$$
-
-$$mean\_lev_{s,c} = \avg\limits_{1 \leq m \leq |images|} \ |\mu_{m,c}^{lev} - \mu_{m,c,s}^{lev}|$$
-
-$mean\_lev_{s,c}$ es el valor que tomaremos como métrica.
+\begin{center}
+\includegraphics[width=\textwidth]{images/edit_distance_explanation.png}
+\end{center}
 \end{frame}
 
 \begin{frame}
@@ -761,17 +728,17 @@ encontrar el target, solo para ensayos exitosos $z_{length}^s$.}
 \section{Conclusiones}
 \begin{frame}{Conclusiones generales}
 \begin{itemize}
-\item Creamos un corpus de imágenes y de descripción de objetos
+\item Creamos un corpus de imágenes y de descripción de objetos.
 \item Creamos un modelo de saliencia que predice mejor la tercera fijación que los modelos del estado del arte
-\item Predijimos con los centros de los círculos de respuesta
-\item Reprodujimos por primera vez el modelo de Geisler en escenas naturales
+\item Predijimos con los centros de los círculos de respuesta.
+\item Reprodujimos por primera vez el modelo de Geisler en escenas naturales.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Trabajos futuros}
 \begin{itemize}
-\item Amplificar el corpus de imágenes y de descripción de objetos
-\item Explorar distintos aspectos de los features tipo II
+\item Amplificar el corpus de imágenes y de descripción de objetos.
+\item Explorar distintos aspectos de los features tipo II.
 \item Utilizar un mapa de visibilidad más sofisticado, por ejemplo el de Bradley et al. 2004.
 \end{itemize}
 \end{frame}
