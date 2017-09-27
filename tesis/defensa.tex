@@ -87,7 +87,7 @@
 {Análisis y predicción de la búsqueda visual humana}
 
 \author[Melanie Sclar] % (optional, use only with lots of authors)
-{~Melanie Sclar}
+{Melanie Sclar\\ \medskip{\small Directores: Dr. Juan Kamienkowski y Dr. Guillermo Solovey \medskip}}
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -136,10 +136,9 @@
 \section{Introducción}
 \begin{frame}{Motivación}
 \begin{itemize}
-\item Hace más de medio siglo que se sabe que los lugares a los que miramos no son aleatorios, sin embargo todavía no existe una teoría formal de cómo funciona la visión humana.
+\item Hace más de medio siglo que se sabe que los lugares a los que miramos no son aleatorios, sin embargo todavía no existe una teoría formal de la interacción entre la visión y los movimientos oculares.
 \item Queremos entender cuáles son los patrones que describen las personas al buscar objetos en una imagen.
-\item Más aún, queremos diseñar algoritmos que puedan simular la visión humana en una búsqueda visual.
-%\item Hace más de una década que se viene fortaleciendo la aplicación de modelos bayesianos para realizar inferencias en entornos ruidosos y con mucha información, e hipotetizamos que la visión
+\item Más aún, queremos diseñar algoritmos que puedan simular los movimientos oculares en una búsqueda visual, como modelos del comportamiento.
 \end{itemize}
 \end{frame}
 
@@ -149,7 +148,7 @@
     \begin{column}{.6\textwidth}
         \vspace{0.8cm}
         \begin{itemize}
-        \item Solamente podemos ver en detalle solo una pequeña porción del campo visual.
+        \item Solamente podemos ver en detalle una pequeña porción del campo visual.
         \item Debido a las limitaciones de agudeza en la retina, los movimientos oculares son necesarios para procesar detalles.
         \end{itemize}
     \end{column}
@@ -184,11 +183,22 @@ Las ubicaciones de las fijaciones no son aleatorias y los patrones que describen
 \end{frame}
 
 \begin{frame}{Búsqueda visual}
-\begin{itemize}
-\item En una búsqueda visual a veces se ignoran regiones muy salientes porque son poco relevantes para la tarea.
-\item La saliencia suele funcionar mejor en escenas artificiales que en naturales.
-\item En contextos naturales hay que combinar saliencia con elementos que describan el target.
-\end{itemize}
+  \begin{columns}[T]
+    \begin{column}{.6\textwidth}
+    \begin{itemize}
+    \item En una búsqueda visual a veces se ignoran regiones muy salientes porque son poco relevantes para la tarea.
+    \item La saliencia suele funcionar mejor en escenas artificiales que en naturales.
+    \item En contextos naturales hay que combinar saliencia con elementos que describan el target.
+    \end{itemize}
+    \end{column}
+    \begin{column}{.4\textwidth}
+        \begin{center}
+        \includegraphics[width=.8\textwidth]{images/wally.jpg} 
+        \end{center}
+        \vspace{0.25cm}
+    \end{column}
+  \end{columns}
+
 \end{frame}
 
 \begin{frame}{Métricas de comparación de \textit{scanpaths}}
@@ -210,6 +220,15 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 \end{frame}
 
 
+\begin{frame}{Hoja de ruta del trabajo}
+\begin{enumerate}
+\item \textbf{Crearemos un experimento de búsqueda visual} donde grabamos los ojos de las personas mientras buscan un objeto.
+\item Intentaremos predecir las regiones que más captarán nuestra atención primero (aquí usaremos los mapas de saliencia) 
+\item Utilizaremos lo anterior para \textbf{predecir una secuencia de fijaciones} en orden.
+\item Para entender cuán verosímiles son nuestras predicciones utilizaremos las medidas de comparación de scanpaths recién mencionadas.
+\end{enumerate}
+\end{frame}
+
 \section{Experimentos}
 \subsection{Creación de un corpus de imágenes}
 \begin{frame}{Creación de un corpus de imágenes de interiores}
@@ -221,8 +240,8 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 \end{itemize}
 \end{frame}
 
-\subsection{Experimento de búsqueda visual}
-\begin{frame}{Diseño del experimento de búsqueda visual}
+\subsection{Tarea de búsqueda visual}
+\begin{frame}{Diseño de la tarea de búsqueda visual}
 
 \begin{itemize}
 \item Utilizamos un Eye Tracker para grabar los movimientos oculares del ojo derecho.
@@ -270,7 +289,7 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 
 \begin{frame}
 \begin{itemize}
-\item Según el ensayo elegimos aleatoriamente la cantidad de sacadas que se le permite realizar a las personas antes de cortar el ensayo y pedirle el reporte subjetivo. 
+\item Aleatorizamos la cantidad máxima de sacadas permitida.
 \item Elegir una buena distribución de cantidad de fijaciones permitidas no fue fácil.%, pues quisimos maximizar la cantidad de ensayos con varias fijaciones donde los sujetos no hayan encontrado el target.
 \end{itemize}
 
@@ -294,15 +313,30 @@ No hay consenso sobre qué métrica utilizar para comparar scanpaths, ya que hay
 
 \end{frame}
 
-\subsection{Experimento de detección de objetos}
-\begin{frame}{Experimento de detección de objetos}
-\begin{itemize}
-\item Mostramos cada uno de los target durante 3 segundos.
-\item Pedimos que digan qué objeto es el de la imagen de tres formas distintas.
-\item Si el usuario no reconoce el objeto, existe una opción a ese fin.
-%\item Esta tarea se puede realizar online en varios días. Si quieren participar, sigue abierta en \texttt{http://objetos.gpoesia.com}
-\item Obtuvimos en promedio 10.5 respuestas por imagen.
-\end{itemize}
+\subsection{Tarea de detección de objetos}
+\begin{frame}{Tarea de detección de objetos}
+
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+        \vspace{0.7cm}
+        \begin{itemize}
+        \item Mostramos cada uno de los target durante 3 segundos.
+        \item Pedimos que digan qué objeto es el de la imagen de tres formas distintas.
+        \item Si el usuario no reconoce el objeto, existe una opción a ese fin.
+        %\item Esta tarea se puede realizar online en varios días. Si quieren participar, sigue abierta en \texttt{http://objetos.gpoesia.com}
+        \item Obtuvimos en promedio 10.5 respuestas por imagen.
+        \end{itemize}
+    \end{column}
+    \begin{column}{.5\textwidth}
+        \begin{center}
+        \includegraphics[width=.5\textwidth]{images/online-task.png} 
+        \end{center}
+        \vspace{0.25cm}
+    \end{column}
+  \end{columns}
+
+
+
 \end{frame}
 
 \subsection{Análisis del comportamiento}
@@ -359,7 +393,11 @@ Notar que el sesgo también se marca en la primera fijación. \end{frame}
 \subsection{Modelos estáticos}
 
 \begin{frame}
-Explicaremos los distintos modelos predictivos que proponemos. Estos modelos se dividen en dos clases según si predicen las regiones a ser fijadas (\textbf{modelos estáticos}) o si predicen el orden de las fijaciones (\textbf{modelos dinámicos}).
+Veremos dos clases de modelos:
+\begin{itemize}
+\item \textbf{modelos estáticos}: sólo predicen las regiones que serán fijadas con más probabilidad.
+\item \textbf{modelos dinámicos}: predicen una secuencia de fijaciones con un orden probable entre ellas
+\end{itemize}
 
 \bigskip
 
@@ -367,10 +405,26 @@ Primero veremos los modelos estáticos y el mejor de ellos será utilizado como 
 \end{frame}
 
 \begin{frame}{Modelo de saliencia de Judd}
+  \begin{columns}[T]
+    \begin{column}{.57\textwidth}
+        \begin{itemize}
+        \item Se realiza un mapa de saliencia por imagen con las fijaciones humanas. Este mapa es tomado como \textit{ground truth}.
+        \item Judd toma 10 píxeles al azar del 20\% más saliente del mapa de saliencia \textit{ground truth} y los identifica como píxeles salientes. Asimismo, toma 10 píxeles al azar del 30\% menos saliente y los toma como píxeles negativos.
+        \item Calcula 33 features por imagen.
+        \end{itemize}
+    \end{column}
+    \begin{column}{.4\textwidth}
+        \begin{center}
+        \includegraphics[width=\linewidth]{images/judd-features.png}
+        \end{center}
+        \vspace{0.25cm}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Modelo de saliencia de Judd (II)}
 \begin{itemize}
-\item Se realiza un mapa de saliencia por imagen con las fijaciones humanas. Este mapa es tomado como \textit{ground truth}.
-\item Judd toma 10 píxeles al azar del 20\% más saliente del mapa de saliencia \textit{ground truth} y los identifica como píxeles salientes. Asimismo, toma 10 píxeles al azar del 30\% menos saliente y los toma como píxeles negativos.
-\item Computa 33 features por imagen.
+
 \item Separa las imágenes en dos conjuntos: uno de entrenamiento y uno de testing. 
 \item Entrena una Support Vector Machine (SVM) con las muestras positivas y negativas del conjunto de imágenes de entrenamiento.
 \item \textbf{Este modelo permite muy fácilmente agregar y remover features} que se adapten mejor a nuestra tarea.
@@ -389,7 +443,7 @@ Primero veremos los modelos estáticos y el mejor de ellos será utilizado como 
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Extensión de Judd - tipo I}
+\begin{frame}{Extensión de Judd - tipo I}{Mapas teniendo en cuenta el aspecto netamente visual del target}
 
 \begin{itemize}
 \item El primer mapa es del de la \textit{cross correlation} del target y la imagen original.
@@ -402,7 +456,7 @@ Primero veremos los modelos estáticos y el mejor de ellos será utilizado como 
 
 \end{frame}
 
-\begin{frame}{Extensión de Judd - tipo II}
+\begin{frame}{Extensión de Judd - tipo II}{Mapas teniendo en cuenta la semántica de la imagen mostrada}
 
   \begin{columns}[T]
     \begin{column}{.65\textwidth}
@@ -423,13 +477,11 @@ Primero veremos los modelos estáticos y el mejor de ellos será utilizado como 
 \end{frame}
 
 \begin{frame}{Outline del algoritmo del mapa de tipo II}
-\begin{itemize}
-\item Detectamos a qué clase de objeto pertenece cada target con una palabra en español con nuestra tarea online.
-\item Medimos la distancia de la palabra que representa a cada target respecto de algunas palabras que denotan posición en una escena de interiores (por ejemplo, mesa, piso, techo, ventana, pared
-- las llamaremos \textbf{palabras posicionales}). 
-\item Se toma la palabra posicional más cercana y ésta representará la posición probable del target: esto hipotetizamos que será un indicio de los sectores de la imagen asociados a la palabra posicional. 
-\item El mapa de features será entonces el mapa de las regiones más fuertemente asociadas a la palabra posicional.
-\end{itemize}
+
+    \begin{center}
+    \includegraphics[width=\textwidth]{images/mapa-tipo-ii.png} 
+    \end{center}
+
 \end{frame}
 
 \begin{frame}
@@ -538,16 +590,37 @@ Para esto nos basaremos en un modelo bayesiano propuesto por Najemnik \& Geisler
 
 \begin{frame}{Modelo de Najemnik \& Geisler}
 
-$$s_{i}(T) = prior(i) \cdot \prod_{t=1}^T exp\left(d'^2_{ik(t)} W_{ik(t)}\right)$$
+$$p_{i}(F) = saliencia(i) \cdot \prod_{f=1}^F e^{visibilidad_{i k(f)} \cdot similitud\_target_{ik(f)}}$$
 
+{ \footnotesize
 \begin{itemize}
-\item $T$ es la fijación actual
-\item $k(t)$ es ubicación de la fijación número $t$
-\item $prior$ es la probabilidad a priori
-\item $d'_{ik(t)}$ y $W_{ik(t)}$ son el mapa de visibilidad y la respuesta del target en la ubicación $i$ cuando el sujeto se encuentra fijando la vista en $k(t)$
-\item Nosotros aproximamos $d'_{ik(t)}$ pues otros modelos más sofisticados eran prohibitivos para nuestra tarea
+\item $i$ es la ubicación que estoy considerando
+\item $F$ es la fijación actual
+\item $k(f)$ es ubicación de la fijación número $f$
 \end{itemize}
+}
+
+\bigskip
+
+Luego, $k(F+1)$ será la posición de la imagen que maximice la probabilidad de identificar bien la ubicación del target después de que la fijación $F+1$ sea realizada.
 \end{frame}
+
+
+%\begin{frame}{Modelo de Najemnik \& Geisler}
+
+%$$s_{i}(T) = prior(i) \cdot \prod_{t=1}^T exp\left(d'^2_{ik(t)} W_{ik(t)}\right) \ \ \ \ p_i(T) = \avg_i{s_i(T)}$$
+
+%{ \footnotesize
+%\begin{itemize}
+%\item $i$ es la ubicación que estoy considerando
+%\item $T$ es la fijación actual
+%\item $k(t)$ es ubicación de la fijación número $t$
+%\item $prior$ es la probabilidad a priori (acá nosotros colocamos modelos de saliencia)
+%\item $d'_{ik(t)}$ es cuán visible es el lugar $i$ si estoy mirando en $k(t)$ (nosotros lo aproximamos con una gaussiana)
+%\item $W_{ik(t)}$ es cuán parecido parece el lugar $i$ al target si estoy mirando en $k(t)$
+%\end{itemize}
+%}
+%\end{frame}
 
 %\begin{frame}
 
@@ -561,56 +634,61 @@ $$s_{i}(T) = prior(i) \cdot \prod_{t=1}^T exp\left(d'^2_{ik(t)} W_{ik(t)}\right)
 
 %\end{frame}
 
-\begin{frame}
+%\begin{frame}
 
-$$k_{opt}(T+1) = \argmax\limits_{k(T+1)} \sum_{i=1}^n p_i(T)p(C|i,k(T+1))$$
+%Luego, $k(T+1)$ será la posición de la imagen que maximice la probabilidad de identificar bien la ubicación del target después de que la fijación $T+1$ sea realizada.
 
-donde $p(C|i,k(T+1))$ es la probabilidad de estar en lo correcto dado que la ubicación del target es $i$ y la ubicación de la próxima fijación es $k(T+1)$.
+%\end{frame}
+
+\begin{frame}{Propiedades del modelo de Najemnik \& Geisler}
+\begin{itemize}
+\item Este modelo logra simular inhibición de retorno y longitudes de sacadas moderadas implícitamente. 
+\item Como $similitud\_target$ involucra una elección al azar, el modelo es capaz de predecir varios scanpaths distintos.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Definición de $W$}
+\begin{frame}{Diferencias entre Geisler y nuestra tarea}
+  \begin{columns}[T]
+    \begin{column}{.6\textwidth}
+        \begin{itemize}
+        \item El modelo de Najemnik \& Geisler fue realizado sobre una escena artificial, y por primera vez se lo aplica en escenas naturales. 
+        \item Tuvimos que discretizar nuestra imagen en una grilla de $15 \times 20$ para poder computar el algoritmo en un tiempo razonable.
+        \end{itemize}
+    \end{column}
+    \begin{column}{.4\textwidth}
+        \begin{center}
+        \centering
+        \includegraphics[width=0.85\linewidth]{images/geisler-task.png}
+        \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Definición de $similitud\_target$}
 \begin{itemize}
-\item Dijimos que $W_{ik(t)}$ es la respuesta del template de la $i$-ésima posible ubicación dado que el sujeto está fijando en $k(t)$ en la fijación número $t$. 
+\item $similitud\_target_{ik(f)}$ representa cuán parecida es la posición $i$ al target para el observador que se encuentra fijando su vista en $k(f)$. 
+\item Formalmente, $similitud\_target_{ik(f)} \in \mathcal{N}(\mu_{ik(f)}, \sigma^2_{ik(f)})$ donde:
 
-\item En otras palabras, representa cuán parecida es la posición $i$ al target para el observador que se encuentra fijando su vista en $k(t)$. 
-\item Definimos $W_{ik(t)} \in \mathcal{N}(\mu_{ik(t)}, \sigma^2_{ik(t)})$ donde:
-
-$$ \mu_{ik(t)}
+$$ \mu_{ik(f)}
 = \left\{ \begin{array}{lc}
              0.5 &  si \ i = \ ubicaci\acute{o}n \ del \ target \\
              -0.5 &  caso \ contrario 
           \end{array}
    \right.$$
 
-$$ \sigma^2_{ik(t)} = \displaystyle\frac{1}{d'^2_{ik(t)}}$$ 
+$$ \sigma^2_{ik(f)} = \displaystyle\frac{1}{visibilidad^2_{ik(f)}}$$ 
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Propiedades del modelo de Najemnik \& Geisler}
-\begin{itemize}
-\item Este modelo logra simular inhibición de retorno y longitudes de sacadas moderadas implícitamente. 
-\item Por su naturaleza probabilística es capaz de predecir varios scanpaths distintos según como se fije $W$.
-\end{itemize}
-\end{frame}
 
-\begin{frame}{Aplicando el modelo de Geisler a nuestra tarea}
+\begin{frame}{Modificando la definición de $similitud\_target$}
 \begin{itemize}
-\item El modelo de Najemnik \& Geisler fue realizado sobre una escena artificial, y por primera vez se lo aplica en escenas naturales. 
-\item Tuvimos que discretizar nuestra imagen en una grilla de $15 \times 20$ para poder computar el algoritmo en un tiempo razonable.
-\item Utilizamos como $prior$ el mapa de saliencia de Judd extendido con nuestras features.
-\end{itemize}
-\end{frame}
+\item Como $visibilidad_{ik(f)} \in [0,1]$, trasladamos la varianza de la siguiente forma:
 
-\begin{frame}{Aplicando el modelo de Geisler a nuestra tarea (II)}
-\begin{itemize}
-\item Como la visibilidad tiende a cero cuando un punto está muy lejos de donde se está realizando la fijación, la varianza tendería a infinito. Es por esto que trasladamos la varianza de la siguiente forma:
-
-$$ \sigma_{ik(t)}^1 = \displaystyle\frac{1}{a \cdot d'_{ik(t)} + b} \text{ con } a = 3 \text{ y } b = 4$$ 
+$$ \sigma_{ik(f)}^1 = \displaystyle\frac{1}{a \cdot visibilidad_{ik(f)} + b} \text{ con } a = 3 \text{ y } b = 4$$ 
 
 Además experimentamos con otros pares $(a,b)$.
-\item Además de usar $W$ como fue definido originalmente, experimentamos con una modificación 
-
-$$\mu_{ik(t)}^2 = \mu^1_{ik(t)} \cdot \Big(d'_{ik(t)} + \dfrac{1}{2}\Big) + corr_{i} \cdot \Big(\dfrac{3}{2} - d'_{ik(t)}\Big) \in [-1, 1]$$
+\item Además de usar $similitud\_target$ como fue definido originalmente, experimentamos con una modificación a $\mu^1_{ik(f)}$, haciendo una combinación lineal entre el original y un mapa de similitud de cada posición con el target.
 
 \end{itemize}
 \end{frame}
@@ -634,8 +712,8 @@ $$\mu_{ik(t)}^2 = \mu^1_{ik(t)} \cdot \Big(d'_{ik(t)} + \dfrac{1}{2}\Big) + corr
 \begin{frame}{Métodos de comparación de scanpaths adaptados a nuestra tarea}
 
 \begin{itemize}
-\item Los métodos de comparación que mencionamos no siempre se adaptan bien a nuestra tarea, así que debimos adaptarlos.
-\item Además, en los trabajos que vimos se suele hacer un análisis de consistencia entre sujetos pero no cuán parecido es un modelo predictivo a los humanos.
+\item Los métodos de comparación que mencionamos al comienzo no siempre se adaptaban bien a nuestra tarea.
+\item En la literatura se solían hacer análisis de consistencia entre sujetos pero no cuán parecido es un modelo predictivo a los humanos.
 \end{itemize}
 \end{frame}
 
@@ -730,7 +808,7 @@ encontrar el target, solo para ensayos exitosos $z_{length}^s$.}
 \begin{itemize}
 \item Creamos un corpus de imágenes y de descripción de objetos.
 \item Creamos un modelo de saliencia que predice mejor la tercera fijación que los modelos del estado del arte
-\item Predijimos con los centros de los círculos de respuesta.
+\item Predijimos los centros de los círculos de respuesta.
 \item Reprodujimos por primera vez el modelo de Geisler en escenas naturales.
 \end{itemize}
 \end{frame}
